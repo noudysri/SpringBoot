@@ -19,7 +19,7 @@ variables:
   # imagePullSecret: 'acrgourav687d-auth'
 
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  vmImageName: 'windows-latest'
   
 
 stages:
