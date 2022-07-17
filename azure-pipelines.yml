@@ -99,3 +99,9 @@ stages:
 #               containers: |
 #                 $(containerRegistry)/$(imageRepository):$(tag)
 
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'venkeyconn'
+        repository: 'venkeyrepo'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
