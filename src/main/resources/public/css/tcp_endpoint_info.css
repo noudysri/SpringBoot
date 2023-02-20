@@ -1,0 +1,211 @@
+
+#method {
+    width : 100%;
+}
+
+#method-button {
+    width : 100%;
+    text-align: left;
+}
+
+.add-button-div {
+    width: 100%;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    text-align: right;
+}
+
+.add-button {
+    width: 160px;
+}
+
+.action-buttons {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 25px;
+}
+
+.action-button-table-cell {
+    text-align: right;
+}
+
+.dropdown-menu {
+    width: 100%;
+}
+
+#default-response-body {
+    min-height: 200px;
+}
+
+#stateful-response-body {
+    min-height: 200px;
+}
+
+.default-label-color {
+    color: cadetblue;
+}
+
+#add-response-header-row {
+    width: 100%;
+}
+
+.remove-resp-head-row-button {
+    text-align: center;
+}
+
+.condition-arg-button-side-offset {
+    margin-left: 8px;
+    margin-right: 6px;
+}
+
+.condition-arg-button-top-offset {
+    margin-top: 9px;
+}
+
+.view-rule-button {
+    margin-left: 15px;
+}
+
+.view-seq-button {
+    margin-left: 15px;
+}
+
+.action-button-table-cell a:hover {
+    text-decoration: none;
+}
+
+.seq-table {
+    min-height: 150px;
+}
+
+.rule-table {
+    min-height: 150px;
+}
+
+.no-results-found {
+    min-height: 150px;
+    margin-top: 100px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.endpoint-status-row {
+    text-align: right;
+}
+
+#endpoint-status {
+    margin-left: 20px;
+}
+
+.action-button-table-cell {
+    width: 90px;
+}
+
+#endpoint-status-button {
+    width: 100px;
+}
+
+.tcp-endpoint-heading {
+    margin-top: 4px;
+}
+
+.proxy-timeout-group {
+    margin-top: 15px;
+}
+
+.shuffle-seq-group {
+    text-align: right;
+}
+
+.suspend-seq-rule {
+    text-decoration: line-through;
+    color: #d7dbdd;
+}
+
+.suspend-icon-left {
+    cursor: default;
+    opacity: .2;
+}
+
+.suspend-icon-right {
+    margin-left: 8px;
+    margin-right: 6px;
+    cursor: default;
+    opacity: .2;
+}
+
+.suspend-button {
+    opacity: .2 !important;
+}
+
+.clients-table-div {
+    min-height: 250px;
+}
+
+.refresh-clients-link {
+    text-align: right;
+}
+
+.resp-col-width-10 {
+    width: 10%;
+}
+
+#clear-proxy-button {
+    width: 100%;
+}
+
+#clear-data-state-button {
+    width: 100%;
+}
+
+#mock-type {
+    margin-top: 25px;
+    width: 100%;
+}
+
+#mock-type-button {
+    width: 100%;
+    text-align: left;
+}
+
+.conn-client-cell {
+    vertical-align: middle !important;
+    font-size: 12px;
+}
+
+.actual-path {
+    font-size: 12px;
+}
+
+.latency-range-div {
+    max-width: 350px;
+    margin-left: 15px;
+}
+
+.latency-range-label {
+    margin-top: 7px;
+    font-weight: bold;
+}
+
+.alert-format {
+    white-space: pre-line;
+}
+
+#custom-js .CodeMirror {
+    border-radius: 8px;
+    font-size: 13px;
+    height: calc(100vh - 420px) !important;
+}
+
+#custom-js .CodeMirror-lines {
+    cursor: default;
+}
+
+#custom-js-syntax {
+    display: none;
+}
+
+.enlarge-js-editor-link {
+    cursor: pointer;
+    text-decoration: underline;
+}

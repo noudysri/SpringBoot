@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="../css/navbar.css" crossorigin="anonymous" />
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid navbar-background">
+
+        <div class="navbar-header">
+            <a class="navbar-brand" ng-click="doOpenDashboard()">
+                <img id="smockin-logo" src="../image/smockin_logo_white.png" alt="sMockin" />
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" uib-collapse="isNavCollapsed">
+
+            <ul class="nav navbar-nav navbar-right">
+
+                <li uib-dropdown on-toggle="toggled(open)" ng-if="displayServerDropDown()" class="server-mode-dropdown">
+                    <a href id="server-dropdown" class="tools-link" uib-dropdown-toggle>
+                        <span class="glyphicon glyphicon-tasks server-mode-dropdown-icon" aria-hidden="true"></span> &nbsp; {{ selectedServerMode }} <span class="caret"></span>
+                    </a>
+                        <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="tools-dropdown">
+                            <li>
+                                <a href="" ng-click="doChangeServerMode(httpServerMode)"> {{ httpServerMode }} </a>
+                            </li>
+                            <li>
+                                <a href="" ng-click="doChangeServerMode(s3ServerMode)"> {{ s3ServerMode }} </a>
+                            </li>
+                            <li>
+                                <a href="" ng-click="doChangeServerMode(mailServerMode)"> {{ mailServerMode }} </a>
+                            </li>
+                        </ul>
+                </li>
+
+                <li uib-dropdown on-toggle="toggled(open)">
+                    <a href id="tools-dropdown" class="tools-link" uib-dropdown-toggle>{{ navbarLabel }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="tools-dropdown">
+                        <li>
+                            <a href="" ng-click="doOpenHelp()">{{ helpLink }}</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="" ng-click="doOpenKvpUserData()">{{ userKvpDataLink }}</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="" ng-click="doOpenHttpClient()">{{ httpClientLink }}</a>
+                        </li>
+                        <li>
+                            <a href="" ng-click="doOpenWebSocketClient()">{{ wsClientLink }}</a>
+                        </li>
+                        <li>
+                            <a href="" ng-click="doOpenViewHttpRequests()">{{ viewHttpRequestsLink }}</a>
+                        </li>
+                        <li role="separator" class="divider" ng-if="isLoggedIn"></li>
+                        <li ng-if="isLoggedIn">
+                            <a href="" ng-click="doOpenMyAccount()">{{ myAccountLink }}</a>
+                        </li>
+                        <li ng-if="isLoggedIn && isAdmin">
+                            <a href="" ng-click="doOpenManageUsers()">{{ manageUsersLink }}</a>
+                        </li>
+                        <li ng-if="isLoggedIn">
+                            <a href="" ng-click="doLogout()">{{ logoutLink }}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+</nav>

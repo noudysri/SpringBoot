@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<html>
+
+    <head>
+
+        <title>sMockin</title>
+
+        <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+        <link rel="stylesheet" href="../css/lib/bootstrap.min.css" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../css/lib/bootstrap-theme.min.css" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../css/smockin_navbar.css" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../css/main.css" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../css/overlay.css" crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="../css/lib/tree/bootstrap-treeview.min.css" crossorigin="anonymous" />
+
+    </head>
+
+    <body ng-app="smockinApp" ng-controller="mainController" class="ng-cloak">
+
+        <div ng-include="'overlay.html'"></div>
+
+        <div ng-include="'navbar.html'" ng-controller="navbarController"></div>
+
+        <div ng-view></div>
+
+        <iframe id="export-download-frame" src="" width="1" height="1"></iframe>
+
+        <!-- AngularJS -->
+        <script src="../js/lib/angular.min.js" type="text/javascript"></script>
+        <script src="../js/lib/angular-route.min.js" type="text/javascript"></script>
+        <script src="../js/lib/angular-animate.min.js" type="text/javascript"></script>
+        <script src="../js/lib/angular-sanitize.min.js" type="text/javascript"></script>
+
+        <!-- JQuery -->
+        <script src="../js/lib/jquery-3.3.1.slim.min.js" type="text/javascript"></script>
+
+        <!-- Bootstrap -->
+        <script src="../js/lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
+
+        <!-- JWT Decoder -->
+        <script src="../js/lib/jwt-decode.min.js"></script>
+
+        <!-- JSON validator -->
+        <script src="../js/lib/jsonlint.js"></script>
+
+        <!-- XML Beautify -->
+        <script src="../js/lib/xml-beautify.js"></script>
+
+        <!-- JS Beautify -->
+        <script src="../js/lib/js-beautify.min.js"></script>
+
+        <!-- MDB (Used for tree view) -->
+        <script type="text/javascript" src="../js/lib/tree/bootstrap-treeview.min.js"></script>
+
+        <!-- Code Mirror -->
+        <script src="../js/lib/codemirror/jshint.js"></script>
+        <script src="../js/lib/codemirror/codemirror.js"></script>
+        <script src="../js/lib/codemirror/javascript.js"></script>
+        <script src="../js/lib/codemirror/lint.js"></script>
+        <script src="../js/lib/codemirror/javascript-lint.js"></script>
+        <script src="../js/lib/codemirror/matchbrackets.js"></script>
+        <script src="../js/lib/codemirror/active-line.js"></script>
+
+        <!-- Controllers -->
+        <script src="../js/controller/main.js"></script>
+        <script src="../js/controller/navbar.js"></script>
+        <script src="../js/controller/routes.js"></script>
+        <script src="../js/controller/http_client.js"></script>
+        <script src="../js/controller/ws_client.js"></script>
+        <script src="../js/controller/dashboard.js"></script>
+        <script src="../js/controller/tcp_dashboard.js"></script>
+        <script src="../js/controller/s3_dashboard.js"></script>
+        <script src="../js/controller/mail_dashboard.js"></script>
+        <script src="../js/controller/server_config.js"></script>
+        <script src="../js/controller/server_proxy_mappings.js"></script>
+        <script src="../js/controller/tcp_endpoint_info.js"></script>
+        <script src="../js/controller/s3_endpoint_info.js"></script>
+        <script src="../js/controller/s3_endpoint_node.js"></script>
+        <script src="../js/controller/s3_endpoint_file_uploader.js"></script>
+        <script src="../js/controller/mail_endpoint_info.js"></script>
+        <script src="../js/controller/mail_endpoint_message.js"></script>
+        <script src="../js/controller/endpoint_info_rule.js"></script>
+        <script src="../js/controller/endpoint_info_rule_condition.js"></script>
+        <script src="../js/controller/endpoint_info_seq.js"></script>
+        <script src="../js/controller/confirmation_alert.js"></script>
+        <script src="../js/controller/ws_send_message.js"></script>
+        <script src="../js/controller/sse_send_message.js"></script>
+        <script src="../js/controller/manage_users.js"></script>
+        <script src="../js/controller/user.js"></script>
+        <script src="../js/controller/authentication.js"></script>
+        <script src="../js/controller/http_import.js"></script>
+        <script src="../js/controller/update_password.js"></script>
+        <script src="../js/controller/view_http_requests.js"></script>
+        <script src="../js/controller/view_http_requests_block_endpoints.js"></script>
+        <script src="../js/controller/js_editor.js"></script>
+        <script src="../js/controller/manage_user_kvp_data.js"></script>
+        <script src="../js/controller/user_kvp_data.js"></script>
+        <script src="../js/controller/server_proxy_mappings_import.js"></script>
+
+        <!-- Services / Directives -->
+        <script src="../js/service/globals.js"></script>
+        <script src="../js/service/utils.js"></script>
+        <script src="../js/service/rest_client.js"></script>
+        <script src="../js/service/uploader_utils.js"></script>
+        <script src="../js/service/auth.js"></script>
+        <script src="../js/service/focus.js"></script>
+        <script src="../js/service/window_size.js"></script>
+
+    </body>
+
+</html>

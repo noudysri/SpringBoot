@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="../css/server_config.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="../css/alert_fade.css" crossorigin="anonymous" />
+
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">{{ serverConfigHeading }}</h4>
+</div>
+
+<div class="modal-body" id="modal-body">
+
+    <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert()" class="alert-fade">{{alert.msg}}</div>
+
+    <div class="form-group">
+        <label for="port" class="ng-binding">{{ portLabel }}</label>
+        <input id="port" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="serverConfig.port" placeholder="{{ portPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+    </div>
+
+    <div class="form-group" ng-if="serverConfig.serverType == RestfulServerType">
+        <label for="maxThreads" class="ng-binding">{{ maxThreadsLabel }}</label>
+        <input id="maxThreads" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="serverConfig.maxThreads" placeholder="{{ maxThreadsPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+    </div>
+
+    <div class="form-group" ng-if="serverConfig.serverType == RestfulServerType">
+        <label for="minThreads" class="ng-binding">{{ minThreadsLabel }}</label>
+        <input id="minThreads" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="serverConfig.minThreads" placeholder="{{ minThreadsPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+    </div>
+
+    <div class="form-group" ng-if="serverConfig.serverType == RestfulServerType">
+        <label for="timeOutMillis" class="ng-binding">{{ timeOutMillisLabel }}</label>
+        <input id="timeOutMillis" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="serverConfig.timeOutMillis" placeholder="{{ timeOutMillisPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+    </div>
+
+    <div class="form-group">
+        <input id="autoStart"  ng-model="serverConfig.autoStart" type="checkbox" ng-disabled="readOnly" />
+        <label for="autoStart" class="ng-binding">{{ autoStartLabel }}</label>
+    </div>
+
+    <div class="form-group" ng-if="serverConfig.serverType == RestfulServerType">
+        <input id="enableCors"  ng-model="serverConfig.enableCors" type="checkbox" ng-disabled="readOnly" />
+        <label for="enableCors" class="ng-binding">{{ enableCorsLabel }}</label>
+    </div>
+
+    <div class="form-group" ng-if="serverConfig.serverType == MailServerType">
+        <input id="autoGenInboxes"  ng-model="serverConfig.autoGenInboxes" type="checkbox" ng-disabled="readOnly" />
+        <label for="autoGenInboxes" class="ng-binding">{{ autoGenInboxesLabel }}</label>
+    </div>
+
+    <div class="form-group delete-mail-message-panel" ng-if="serverConfig.serverType == MailServerType">
+        <br />
+        <br />
+        <button class="btn btn-danger" type="button" ng-click="doPurgeAllMailMessages('CACHE')">{{ purgeMailMessagesInCacheButtonLabel }}</button>
+        &nbsp;&nbsp;
+        <button class="btn btn-danger" type="button" ng-click="doPurgeAllMailMessages('DB')">{{ purgeMailMessagesInDatabaseButtonLabel }}</button>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="doCancel()">{{ cancelButtonLabel }}</button>
+    <button class="btn btn-primary" type="button" ng-click="doSaveConfig()" ng-if="!readOnly">{{ saveButtonLabel }}</button>
+</div>

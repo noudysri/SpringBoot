@@ -1,0 +1,7 @@
+
+logging:
+  level:
+    org.springframework: OFF
+    ROOT: OFF
+
+spring.main.banner-mode: 'off'

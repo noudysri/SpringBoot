@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="../css/alert_fade.css" crossorigin="anonymous" />
+
+<div ng-cloak class="ng-cloak">
+
+    <div class="container-fluid">
+
+        <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert()" class="alert-fade">{{alert.msg}}</div>
+
+        <br />
+
+        <div ng-include="'tcp_dashboard.html'" ng-if="currentServerModeView == httpServerMode"></div>
+        <div ng-include="'s3_dashboard.html'" ng-if="currentServerModeView == s3ServerMode"></div>
+        <div ng-include="'mail_dashboard.html'" ng-if="currentServerModeView == mailServerMode"></div>
+
+    </div>
+
+</div>

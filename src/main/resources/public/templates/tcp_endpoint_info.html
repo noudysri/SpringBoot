@@ -1,0 +1,592 @@
+<link rel="stylesheet" href="../css/tcp_endpoint_info.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="../css/alert_fade.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="../css/lib/codemirror/codemirror.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="../css/lib/codemirror/lint.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="../css/lib/codemirror/darcula.css" crossorigin="anonymous" />
+
+<div ng-cloak class="ng-cloak">
+
+    <div class="container">
+
+        <h3>
+            <div class="row">
+
+                <div class="col-sm-9" class="tcp-endpoint-heading">
+                    {{ endpointHeading }}
+                </div>
+
+                <div class="col-sm-3 endpoint-status-row">
+                    {{ endpointStatusLabel }}
+                    <div id="endpoint-status" class="btn-group" uib-dropdown>
+                        <button id="endpoint-status-button" type="button" class="btn btn-{{(endpoint.status == activeStatus)?'success':'default'}} dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled || readOnly">
+                            <span>{{ (endpoint.status == activeStatus) ? enabledLabel : disabledLabel }}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul id="endpoint-status-list" class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li role="menuitem">
+                                <a ng-click="doSetEndpointStatus(activeStatus)">{{ enabledLabel }}</a>
+                                <a ng-click="doSetEndpointStatus(inActiveStatus)">{{ disabledLabel }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </h3>
+
+        <br />
+
+        <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + alert.type" close="closeAlert()" class="alert-fade alert-format">{{alert.msg}}</div>
+
+        <div class="row">
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label for="path" class="ng-binding">{{ pathLabel }}</label><span class="pull-right actual-path" ng-if="defaultCtxPathPrefix != null"> ({{ actualPathPrefixLabel }} {{ defaultCtxPathPrefix }}<b>{{ endpoint.path }}</b>)</span>
+                    <input id="path" class="form-control ng-isolate-scope ng-pristine ng-valid" focus="isNew" ng-model="endpoint.path" placeholder="{{ pathPlaceHolderTxt }}" type="text" ng-disabled="readOnly" />
+                </div>
+
+				<!-- This is the method drop-down list.  Disabled for Websocket and SSE Mock Types -->
+                <div class="form-group">
+                    <label for="method" class="ng-binding">{{ methodLabel }}</label>
+                    <br />
+                    <div id="method" class="btn-group" uib-dropdown>
+                        <button id="method-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="endpoint.mockType.value == mockTypeWebSocket || endpoint.mockType.value == mockTypeProxySse || endpoint.mockType.value == mockTypeRuleWs || endpoint.mockType.value == mockTypeStateful || readOnly">
+                            <span ng-if="endpoint.method != null">{{ endpoint.method }}</span>
+                            <span ng-if="endpoint.method == null">{{ selectDropDownLabel }}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li role="menuitem" ng-repeat="m in httpMethods">
+                                <a ng-click="doSelectHttpMethod(m)">{{ m }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- This column is only visible for Stateful Mock Types -->
+                <section ng-show="endpoint.mockType.value == mockTypeStateful">
+
+                    <div class="form-group">
+                        <label for="stateful-content-type" class="ng-binding">{{ defaultContentTypeLabel }}</label>
+                        <input id="stateful-content-type" class="form-control ng-isolate-scope ng-pristine ng-valid" value="{{ endpoint.contentType }}" type="text" ng-disabled="true" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stateful-id-field-name" class="ng-binding">{{ statefulIdFieldNameLabel }}</label>
+                        <input id="stateful-id-field-name" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.statefulIdFieldName" type="text" ng-disabled="readOnly" />
+                    </div>
+
+                    <div class="form-group" ng-if="false">
+                        <label for="stateful-id-field-path" class="ng-binding">{{ statefulIdFieldLocationLabel }}</label>
+                        <input id="stateful-id-field-path" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.statefulIdFieldLocation" placeholder="{{ statefulIdFieldLocationPlaceholderLabel }}" type="text" ng-disabled="readOnly" />
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="stateful-response-body" class="ng-binding default-label-color">{{ initialDataStateLabel }}</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href ng-click="doFormatJson()" class="pull-right">{{ formatJsonLabel }}</a>
+                            </div>
+                        </div>
+                        <textarea id="stateful-response-body" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.responseBody" ng-disabled="readOnly"></textarea>
+                    </div>
+
+                </section>
+
+				<!-- This column is only visible for HTTP Rules -->
+				<section ng-show="endpoint.mockType.value == mockTypeRule || endpoint.mockType.value == mockTypeRuleWs">
+	                <div class="form-group">
+	                    <label for="contentType" class="ng-binding default-label-color">{{ defaultContentTypeLabel }}</label>
+	                    <input id="contentType" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.contentType" placeholder="{{ defaultContentTypePlaceholderTxt }}" type="text" uib-typeahead="ct for ct in contentTypes | filter:$viewValue | limitTo:8" ng-disabled="readOnly" />
+	                </div>
+
+	                <div class="form-group" ng-show="endpoint.mockType.value == mockTypeRule">
+	                    <label for="httpStatusCode" class="ng-binding default-label-color">{{ defaultHttpStatusCodeLabel }}</label>
+	                    <input id="httpStatusCode" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.httpStatusCode" placeholder="{{ defaultHttpStatusCodePlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+	                </div>
+
+	                <div class="form-group">
+	                    <div class="row">
+	                        <div class="col-sm-6">
+	                            <label for="default-response-body" class="ng-binding default-label-color">{{ defaultResponseBodyLabel }}</label>
+	                        </div>
+	                        <div class="col-sm-6">
+	                            <a href ng-click="doFormatJson()" class="pull-right" ng-if="endpoint.contentType == JsonContentType">{{ formatJsonLabel }}</a>
+	                            <a href ng-click="doFormatXml()" class="pull-right" ng-if="endpoint.contentType == XmlContentType">{{ formatXmlLabel }}</a>
+	                        </div>
+	                    </div>
+	                    <textarea id="default-response-body" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.responseBody" ng-disabled="readOnly"></textarea>
+	                </div>
+
+	                <div class="form-group" ng-show="endpoint.mockType.value == mockTypeRule">
+	                    <label for="response-headers" class="ng-binding default-label-color">{{ responseHeadersLabel }}</label>
+	
+	                    <div class="panel panel-default">
+	                        <div class="panel-body">
+	
+	                            <table id="response-headers" class="table table-striped">
+	                                <thead>
+	                                <tr>
+	                                    <th class="default-label-color">{{ responseHeaderNameLabel }}</th>
+	                                    <th class="default-label-color">{{ responseHeaderValueLabel }}</th>
+	                                    <th></th>
+	                                </tr>
+	                                </thead>
+	                                <tbody>
+	                                <tr ng-repeat="rh in responseHeaderList">
+	                                    <td>
+	                                        <input type="text" ng-model="rh.name" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-disabled="readOnly" />
+	                                    </td>
+	                                    <td>
+	                                        <input type="text" ng-model="rh.value" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-disabled="readOnly" />
+	                                    </td>
+	                                    <td class="remove-resp-head-row-button">
+	                                        <button type="button" class="btn btn-warning" ng-click="doRemoveResponseHeaderRow($index)" ng-disabled="readOnly">{{ removeResponseHeaderButtonLabel }}</button>
+	                                    </td>
+	                                </tr>
+	                                </tbody>
+	                            </table>
+	
+	                            <button id="add-response-header-row" type="button" class="btn btn-info" ng-click="doAddResponseHeaderRow()" ng-disabled="readOnly"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ addResponseHeaderButtonLabel }}</button>
+	
+	                        </div>
+	                    </div>
+	                </div>
+
+	            </section>
+
+            </div>
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <div id="mock-type" class="btn-group" uib-dropdown>
+                        <button id="mock-type-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="readOnly">
+                            {{ endpoint.mockType.name }} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li role="menuitem" ng-repeat="mt in mockTypes">
+                                <a ng-click="doSelectMockType(mt)">{{ mt.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <!-- Sequence Type -->
+                <div ng-show="endpoint.mockType.value == mockTypeSeq">
+
+                    <div class="add-button-div">
+                        <button type="button" class="btn btn-primary add-button" ng-click="doOpenAddSequence()" ng-disabled="readOnly"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ addSequenceButtonLabel }}</button>
+                    </div>
+
+                    <div class="no-results-found" ng-if="endpoint.definitions.length == 0">
+                        {{ noSeqFound }}
+                    </div>
+
+                    <table class="table table-striped seq-table" ng-if="endpoint.definitions.length > 0">
+                        <thead>
+                        <tr>
+                            <th>{{ orderNoLabel }}</th>
+                            <th>{{ statusCodeLabel }}</th>
+                            <th>{{ frequencyLabel }}</th>
+                            <th>{{ responseBodyLabel }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="x in endpoint.definitions">
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule resp-col-width-10' : 'resp-col-width-10'">{{ x.orderNo }}</td>
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule resp-col-width-10' : 'resp-col-width-10'">{{ x.httpStatusCode }}</td>
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule resp-col-width-10' : 'resp-col-width-10'">{{ x.frequencyCount }}</td>
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule' : ''">{{ (x.responseBody != null) ? ( x.responseBody | limitTo: responseBodyLimit ) : 'N/A' }}</td>
+                            <td class="action-button-table-cell">
+
+                                <a href="" ng-click="doMoveSeqUp(x, $index)" ng-class="(x.suspend) ? 'suspend-icon-left' : ''" ng-hide="readOnly">
+                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                </a>
+                                <a href="" ng-click="doMoveSeqDown(x, $index)" ng-class="(x.suspend) ? 'suspend-icon-right' : 'condition-arg-button-side-offset'" ng-hide="readOnly">
+                                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                </a>
+
+                                <br />
+
+                                <a href="" ng-click="doToggleSuspendSeq($index)">
+                                    <span class="glyphicon glyphicon-pause" aria-hidden="true" ng-hide="x.suspend || readOnly"></span>
+                                    <span class="glyphicon glyphicon-play condition-arg-button-top-offset" aria-hidden="true" ng-show="x.suspend && !readOnly"></span>
+                                </a>
+                                <a href="" ng-click="doRemoveSeq($index)" ng-class="(x.suspend) ? 'suspend-icon-right' : 'condition-arg-button-side-offset'" ng-hide="readOnly">
+                                    <span class="glyphicon glyphicon-remove condition-arg-button-top-offset" aria-hidden="true"></span>
+                                </a>
+
+                                <br />
+                                <br />
+
+                                <button type="button" class="btn btn-primary view-seq-button" ng-class="(x.suspend) ? 'suspend-button' : ''" ng-click="doOpenViewSequence(x)" ng-disabled="x.suspend">{{ viewButtonLabel }}</button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="form-group" class="shuffle-seq-group" ng-show="endpoint.definitions.length > 1">
+                        <input id="shuffleSequence" ng-model="endpoint.randomiseDefinitions" type="checkbox" ng-disabled="readOnly" />
+                        <label for="shuffleSequence" class="ng-binding">{{ shuffleSequenceLabel }}</label>
+                    </div>
+
+                </div>
+
+
+                <!-- Rule Based Type -->
+                <div ng-show="endpoint.mockType.value == mockTypeRule || endpoint.mockType.value == mockTypeRuleWs">
+
+                    <div class="add-button-div">
+                        <button type="button" class="btn btn-primary add-button" ng-click="doOpenAddRule()" ng-disabled="readOnly"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ addRuleButtonLabel }}</button>
+                    </div>
+
+                    <div class="no-results-found" ng-if="endpoint.rules.length == 0">
+                        {{ noRulesFound }}
+                    </div>
+
+                    <table class="table table-striped rule-table" ng-if="endpoint.rules.length > 0">
+                        <thead>
+                        <tr>
+                            <th>{{ ruleLabel }}</th>
+                            <th>{{ statusCodeLabel }}</th>
+                            <th>{{ responseBodyLabel }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="x in endpoint.rules">
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule resp-col-width-10' : 'resp-col-width-10'">{{ x.orderNo }}</td>
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule resp-col-width-10' : 'resp-col-width-10'">{{ x.httpStatusCode }}</td>
+                            <td ng-class="(x.suspend) ? 'suspend-seq-rule' : ''">{{ (x.responseBody != null) ? ( x.responseBody | limitTo: responseBodyLimit ) : 'N/A' }}</td>
+                            <td class="action-button-table-cell">
+
+                                <a href="" ng-click="doMoveRuleUp(x, $index)" ng-class="(x.suspend) ? 'suspend-icon-left' : ''" ng-hide="readOnly">
+                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                </a>
+                                <a href="" ng-click="doMoveRuleDown(x, $index)" ng-class="(x.suspend) ? 'suspend-icon-right' : 'condition-arg-button-side-offset'" ng-hide="readOnly">
+                                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                </a>
+
+                                <br />
+
+                                <a href="" ng-click="doToggleSuspendRule($index)">
+                                    <span class="glyphicon glyphicon-pause" aria-hidden="true" ng-hide="x.suspend || readOnly"></span>
+                                    <span class="glyphicon glyphicon-play condition-arg-button-top-offset" aria-hidden="true" ng-show="x.suspend && !readOnly"></span>
+                                </a>
+                                <a href="" ng-click="doRemoveRule($index)" ng-class="(x.suspend) ? 'suspend-icon-right' : 'condition-arg-button-side-offset'" ng-hide="readOnly">
+                                    <span class="glyphicon glyphicon-remove condition-arg-button-top-offset" aria-hidden="true"></span>
+                                </a>
+
+                                <br />
+                                <br />
+
+                                <button type="button" class="btn btn-primary view-rule-button" ng-class="(x.suspend) ? 'suspend-button' : ''" ng-click="doOpenViewRule(x)" ng-disabled="x.suspend">{{ viewButtonLabel }}</button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+                <!-- HTTP Proxy Type -->
+                <div ng-show="endpoint.mockType.value == mockTypeProxyHttp">
+
+                    <div class="form-group proxy-timeout-group">
+                        <label for="proxyTimeout" class="ng-binding">{{ proxyTimeoutLabel }}</label>
+                        <input id="proxyTimeout" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.proxyTimeout" placeholder="{{ proxyTimeoutPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+                    </div>
+
+                    <br />
+
+                    <uib-accordion id="manageProxy" close-others="false" ng-if="!isNew && !readOnly">
+                        <div uib-accordion-group class="panel panel-default">
+
+                            <uib-accordion-heading>
+                                <span ng-click="mp.isOpen = !mp.isOpen">
+                                    {{ manageHttpProxyQueueLabel }}
+                                </span>
+                                    <span class="pull-right">
+                                    <i class="glyphicon" ng-click="mp.isOpen = !mp.isOpen" ng-class="{'glyphicon-chevron-down': mp.isOpen, 'glyphicon-chevron-right': !mp.isOpen}"></i>
+                                </span>
+                            </uib-accordion-heading>
+
+                            <h5><b>{{ option1Label }}</b> - {{ option1Text }}</h5>
+                            <input class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="proxyPushToQueueEndpoint" readonly="true" ng-disaabled="true" />
+
+                            <hr />
+
+                            <h5><b>{{ option2Label }}</b> - {{ option2Text }}</h5>
+                            <br />
+
+                            <div class="form-group">
+                                <label for="proxyContentType" class="ng-binding">{{ proxyContentTypeLabel }}</label>
+                                <input id="proxyContentType" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="proxyEndpoint.contentType" placeholder="{{ defaultContentTypePlaceholderTxt }}" type="text" uib-typeahead="ct for ct in contentTypes | filter:$viewValue | limitTo:8" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="proxyHttpStatusCode" class="ng-binding">{{ proxyHttpStatusCodeLabel }}</label>
+                                <input id="proxyHttpStatusCode" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="proxyEndpoint.httpStatusCode" placeholder="{{ defaultHttpStatusCodePlaceholderTxt }}" type="text" />
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="proxy-default-response-body" class="ng-binding">{{ proxyResponseBodyLabel }}</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <a href ng-click="doFormatProxyJson()" class="pull-right" ng-if="proxyEndpoint.contentType == JsonContentType">{{ formatJsonLabel }}</a>
+                                        <a href ng-click="doFormatProxyXml()" class="pull-right" ng-if="proxyEndpoint.contentType == XmlContentType">{{ formatXmlLabel }}</a>
+                                    </div>
+                                </div>
+                                <textarea id="proxy-default-response-body" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="proxyEndpoint.responseBody"></textarea>
+                            </div>
+
+                            <span class="pull-right">
+                                <button class="btn btn-warning" type="button" ng-click="doClearProxyFields()" ng-disabled="endpoint.status == inActiveStatus">{{ clearProxyResponseFieldsButtonLabel }}</button>
+                                <button class="btn btn-success" type="button" ng-click="doPostProxyResponse()" ng-disabled="endpoint.status == inActiveStatus">{{ postProxyResponseButtonLabel }}</button>
+                            </span>
+
+                            <br />
+                            <br />
+                            <hr />
+
+                            <button id="clear-proxy-button" class="btn btn-info" type="button" ng-click="doClearProxyQueue()" ng-disabled="endpoint.status == inActiveStatus || readOnly">{{ clearProxyButtonLabel }}</button>
+
+                        </div>
+                    </uib-accordion>
+
+                </div>
+
+
+                <!-- WebSocket Proxy Type -->
+                <div ng-show="endpoint.mockType.value == mockTypeWebSocket || endpoint.mockType.value == mockTypeRuleWs">
+
+                    <div class="form-group proxy-timeout-group">
+                        <label for="websocketTimeout" class="ng-binding">{{ webSocketTimeoutLabel }}</label>
+                        <input id="websocketTimeout" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.webSocketTimeout" placeholder="{{ webSocketTimeoutPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+                    </div>
+
+                    <div class="form-group proxy-timeout-group">
+                        <input id="wsPushIdOnConnect"  ng-model="endpoint.wsPushIdOnConnect" type="checkbox" ng-disabled="readOnly" />
+                        <label for="wsPushIdOnConnect" class="ng-binding">{{ pushIdOnConnectLabel }}</label>
+                    </div>
+
+
+                    <uib-accordion id="manageWsProxy" close-others="false" ng-if="!isNew && !readOnly">
+                        <div uib-accordion-group class="panel panel-default">
+
+                            <uib-accordion-heading>
+                                <span ng-click="wsc.isOpen = !wsc.isOpen">
+                                    {{ activeClientConnectionsLabel }}
+                                </span>
+                                <span class="pull-right">
+                                    <i class="glyphicon" ng-click="wsc.isOpen = !wsc.isOpen" ng-class="{'glyphicon-chevron-down': wsc.isOpen, 'glyphicon-chevron-right': !wsc.isOpen}"></i>
+                                </span>
+                            </uib-accordion-heading>
+
+                            <div class="refresh-clients-link" ng-if="endpoint.status == activeStatus && !readOnly">
+                                <a href="" ng-click="doRefreshActiveWsClients()">
+                                    {{ refreshClientsLinkLabel }}
+                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                                </a>
+                            </div>
+
+                            <br />
+
+                            <div class="no-results-found" ng-if="activeWsClients.length == 0">
+                                {{ noActiveWsClientsFound }}
+                            </div>
+
+                            <div class="clients-table-div" ng-if="activeWsClients.length > 0">
+                                <table class="table table-striped rule-table">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ clientIdHeading }}</th>
+                                            <th>{{ clientJoinDateHeading }}</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="ws in activeWsClients">
+                                            <td class="conn-client-cell">{{ ws.id }}</td>
+                                            <td class="conn-client-cell">{{ ws.dateJoined | date: "dd/MM/yyyy HH:mm:ss" : "UTC" }}</td>
+                                            <td class="conn-client-cell">
+                                                <button class="btn btn-info" type="button" ng-click="doOpenPushWSMessageView(ws.id)" ng-disabled="endpoint.status == inActiveStatus || readOnly">{{ messageButtonLabel }}</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </uib-accordion>
+
+                </div>
+
+
+                <!-- SSE Proxy Type -->
+                <div ng-show="endpoint.mockType.value == mockTypeProxySse">
+
+                    <div class="form-group proxy-timeout-group">
+                        <label for="sseHeartbeat" class="ng-binding">{{ sseHeartbeatLabel }}</label>
+                        <input id="sseHeartbeat" class="form-control ng-isolate-scope ng-pristine ng-valid" ng-model="endpoint.sseHeartbeat" placeholder="{{ sseHeartbeatPlaceholderTxt }}" type="text" ng-disabled="readOnly" />
+                    </div>
+
+                    <div class="form-group proxy-timeout-group">
+                        <input id="ssePushIdOnConnect"  ng-model="endpoint.ssePushIdOnConnect" type="checkbox" ng-disabled="readOnly" />
+                        <label for="ssePushIdOnConnect" class="ng-binding">{{ pushIdOnConnectLabel }}</label>
+                    </div>
+
+                    <br />
+
+                    <uib-accordion id="manageSseProxy" close-others="false" ng-if="!isNew && !readOnly">
+                        <div uib-accordion-group class="panel panel-default">
+
+                            <uib-accordion-heading>
+                                <span ng-click="smp.isOpen = !smp.isOpen">
+                                    {{ activeClientConnectionsLabel }}
+                                </span>
+                                <span class="pull-right">
+                                    <i class="glyphicon" ng-click="smp.isOpen = !smp.isOpen" ng-class="{'glyphicon-chevron-down': smp.isOpen, 'glyphicon-chevron-right': !smp.isOpen}"></i>
+                                </span>
+                            </uib-accordion-heading>
+
+                            <div class="refresh-clients-link" ng-if="endpoint.status == activeStatus && !readOnly">
+                                <a href="" ng-click="doRefreshActiveSseClients()">
+                                    {{ refreshClientsLinkLabel }}
+                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                                </a>
+                            </div>
+
+                            <br />
+
+                            <div class="no-results-found" ng-if="activeSseClients.length == 0">
+                                {{ noActiveSseClientsFound }}
+                            </div>
+
+                            <div class="clients-table-div" ng-if="activeSseClients.length > 0">
+                                <table class="table table-striped rule-table">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ clientIdHeading }}</th>
+                                        <th>{{ clientJoinDateHeading }}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="as in activeSseClients">
+                                        <td class="conn-client-cell">{{ as.id }}</td>
+                                        <td class="conn-client-cell">{{ as.dateJoined | date: "dd/MM/yyyy HH:mm:ss" : "UTC" }}</td>
+                                        <td class="conn-client-cell">
+                                            <button class="btn btn-info" type="button" ng-click="doOpenPushSseMessageView(as.id)" ng-disabled="endpoint.status == inActiveStatus || readOnly">{{ messageButtonLabel }}</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </uib-accordion>
+
+                </div>
+
+
+                <!-- Custom JS -->
+                <div ng-show="endpoint.mockType.value == mockTypeCustomJs">
+
+                    <br />
+
+                    <div id="custom-js" class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="custom-js-syntax" class="ng-binding">{{ customJsSyntaxLabel }}</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <a ng-click="doExpandJsEditor()" class="pull-right enlarge-js-editor-link">{{ editCustomJSLabel }}</a>
+                            </div>
+                        </div>
+                        <textarea id="custom-js-syntax" name="custom-js-syntax"></textarea>
+                    </div>
+
+                </div>
+
+
+                <!-- Stateful Mock Type -->
+                <div ng-show="endpoint.mockType.value == mockTypeStateful && !isNew && !readOnly">
+
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+
+                    <hr />
+                    <br />
+
+                    <button id="clear-data-state-button" class="btn btn-info" type="button" ng-click="doClearDataState()" ng-if="!readOnly">{{ clearStateButtonLabel }}</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div ng-if="endpoint.mockType.value == mockTypeProxyHttp
+                        || endpoint.mockType.value == mockTypeSeq
+                        || endpoint.mockType.value == mockTypeRule
+                        || endpoint.mockType.value == mockTypeCustomJs">
+
+            <div class="form-group">
+                <input id="random-response-latency"  ng-model="endpoint.randomiseLatency" type="checkbox" />
+                <label for="random-response-latency" class="ng-binding">{{ enableRandomLatencyLabel }}</label>
+            </div>
+
+            <div ng-if="endpoint.randomiseLatency" class="latency-range-div">
+
+                <b>{{ latencyRangeLabel }}</b>
+
+                <br />
+                <br />
+
+                <div class="row">
+                    <div class="col-sm-1 latency-range-label">
+                        {{ latencyRangeMinLabel }}
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="text" ng-model="endpoint.randomiseLatencyRangeMinMillis" class="form-control ng-isolate-scope ng-pristine ng-valid" />
+                    </div>
+                    <div class="col-sm-1 latency-range-label">
+                        {{ latencyRangeMaxLabel }}
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="text" ng-model="endpoint.randomiseLatencyRangeMaxMillis" class="form-control ng-isolate-scope ng-pristine ng-valid" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+
+        <div class="action-buttons">
+            <button class="btn btn-default" type="button" ng-click="doCancel()">{{ cancelButtonLabel }}</button>
+            <button class="btn btn-danger" type="button" ng-click="doDelete()" ng-if="!isNew && !readOnly">{{ deleteButtonLabel }}</button>
+            <button class="btn btn-primary" type="button" ng-click="doSaveEndpoint()" ng-if="!readOnly">{{ saveButtonLabel }}</button>
+        </div>
+
+    </div>
+
+</div>

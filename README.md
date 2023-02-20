@@ -1,19 +1,58 @@
-# SpringBoot Application
-# AKS CREATION AND ACR CREATION STEPS USING AZURE CLI
-az group create --name AKSRG --location "West Europe"
-az aks create --resource-group AKSRG --name aksgourav --enable-addons monitoring --generate-ssh-keys --location "West Europe"
-az acr create --resource-group AKSRG --name acrgourav --sku Standard --location "West Europe"
-CLIENT_ID=$(az aks show --resource-group AKSRG --name aksgourav --query "servicePrincipalProfile.clientId" --output tsv)
-ACR_ID=$(az acr show --name acrgourav --resource-group AKSRG --query "id" --output tsv)
-az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID
+### REQUIREMENTS
 
-# CONNECTING TO CLUSTER
-az  aks get-credentials --resource-group AKSRG --name aksgourav
+   - Java 8
+   - Maven 3
 
-az aks browse --resource-group=AKSRG --name=aksgourav
+   Please Note
+      -   All bash scripts were written and tested on GNU Bash version 3.2.57(1)-release.
+      -   All BAT files were were written and tested on Windows 7.
 
-# KUBERNETS CLI
-kubectl get pods
-kubectl get service mhc-front --watch
-kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+<br/>
 
+### QUICK START
+
+
+Change the current directory to **smockin** and build the project:
+
+
+mvn clean install
+```
+
+Run the **install** and **start** scripts (for windows, use the equivalent .bat files):
+
+```
+./install.sh
+
+./start.sh
+```
+
+Finally from your browser open the dashboard:
+
+```
+http://localhost:8000/index.html
+```
+
+(If running sMockin for the first time then please allow 20 - 30 secs for the app to fully start up.)
+
+<br />
+
+For further details, please consult the [Installation](https://github.com/mgtechsoftware/smockin/wiki/Installation) and [Getting Started](https://github.com/mgtechsoftware/smockin/wiki/API-Mock-Tutorial:-Getting-Started) guides in the Wiki. 
+
+You can also check out the latest help guide [here](https://www.smockin.com/help)
+
+<br/>
+
+### TROUBLESHOOTING
+
+Please consult the [Configuration & Troubleshooting](https://github.com/mgtechsoftware/smockin/wiki/Configuration-&-Troubleshooting) guide.
+
+<br/>
+
+### LICENCE
+
+
+sMockin is licensed in accordance with the terms of the Apache License, Version 2.0.
+
+The full text of this license can be found at https://www.apache.org/licenses/LICENSE-2.0
+
+<br/>

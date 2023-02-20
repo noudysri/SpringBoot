@@ -1,0 +1,50 @@
+
+.modal-header {
+    padding: 12px;
+    color: #fff;
+    border-radius: 4px;
+    background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
+}
+
+.modal-dialog {
+    width: 950px;
+}
+
+#client-method-button {
+    width : 100%;
+}
+
+#client-request-body {
+    height: 155px;
+}
+
+.default-label-color {
+    color: cadetblue;
+}
+
+#add-request-header-row {
+    width: 100%;
+}
+
+.remove-req-head-row-button {
+    text-align: center;
+}
+
+#client-response-body {
+    height: 185px;
+}
+
+.modal-footer-buttons {
+    text-align: left;
+}
+
+.request-headers-panel {
+    overflow-y: scroll;
+    height: 250px;
+}
+
+.no-request-headers {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 100px;
+}
