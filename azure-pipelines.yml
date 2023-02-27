@@ -31,7 +31,7 @@ stages:
                 
                 echo Hello world
 
-  - stage: test_deploy
+  - stage: test1_deploy
     jobs:
       - job: install
         steps:
