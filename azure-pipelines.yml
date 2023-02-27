@@ -30,7 +30,8 @@ stages:
                 script: |
                 # Write your commands here
                 
-              echo 'Hello world'
+                echo 'Hello world'
+
   # - stage: Shoutdown_smockin
   #   jobs:
   #     - job: installer
