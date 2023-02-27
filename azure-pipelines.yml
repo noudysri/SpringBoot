@@ -21,6 +21,7 @@ stages:
                 mvn clean
           
   - stage: test_deploy
+    condition: failed()
     jobs:
       - job: install
         steps:
