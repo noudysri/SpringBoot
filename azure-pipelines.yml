@@ -19,7 +19,7 @@ stages:
               targetType: "inline"
               script: |
                 mvn clean
-                mvn install
+          
   - stage: test_deploy
     jobs:
       - job: install
@@ -30,3 +30,14 @@ stages:
                 echo Write your commands here
                 
                 echo Hello world
+
+  - stage: test_deploy
+    jobs:
+      - job: install
+        steps:
+          - task: CmdLine@2
+            inputs:
+              script: |
+                echo Write your commands here
+                
+                echo Hello world again              
