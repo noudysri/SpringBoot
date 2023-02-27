@@ -30,15 +30,16 @@ stages:
               script: |
             # Write your commands here
             
-        echo 'Hello world'
-    - stage: test_build
+         echo 'Hello world'
+
+  - stage: test_build
     jobs:
-        -job: install
+      - job: install
         steps:
-        - task: Bash@3
+          - task: Bash@3
             inputs:
-            targetType: 'inline'
-            script: |
-                # Write your commands here
+              targetType: 'inline'
+                script: |
+              # Write your commands here
                 
-            echo 'Hello world'
+        echo 'Hello world'
