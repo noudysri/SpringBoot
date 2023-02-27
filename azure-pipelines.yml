@@ -31,14 +31,14 @@ stages:
             # Write your commands here
             
         echo 'Hello world'
-  - stage: test_build
+    - stage: test_build
     jobs:
-      -job: install
-       steps:
-       - task: Bash@3
-         inputs:
-           targetType: 'inline'
-           script: |
-             # Write your commands here
-             
-             echo 'Hello world'
+        -job: install
+        steps:
+        - task: Bash@3
+            inputs:
+            targetType: 'inline'
+            script: |
+                # Write your commands here
+                
+            echo 'Hello world'
