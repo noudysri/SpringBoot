@@ -22,71 +22,23 @@ stages:
                 mvn install
   - stage: test_deploy
     jobs:
-        - job: install
-          steps:
-            - task: Bash@3
-              inputs:
-                targetType: 'inline'
-                script: |
-                # Write your commands here
-                
-                echo 'Hello world'
-
-  # - stage: Shoutdown_smockin
-  #   jobs:
-  #     - job: installer
-  #       steps:
-  #         - task: ShellScript@2
-  #           inputs:
-  #             scriptPath: "shutdown.sh"
-
-  # - stage: install_smockin
-  #   jobs:
-  #     - job: installer
-  #       steps:
-  #         - task: ShellScript@2
-  #           inputs:
-  #             scriptPath: "install.sh"
-
-  # - stage: Start_smockin
-  #   jobs:
-  #     - job: installer
-  #       steps:
-  #         - task: ShellScript@2
-  #           inputs:
-  #             scriptPath: "start.sh"
-
-#   - stage: Deply_to_AzureSW
-#     variables:
-#       - group: devv-variable-group
-#     jobs:
-#       - job: deploy
-#         steps:
-#           - task: Bash@3
-#             inputs:
-#               targetType: "inline"
-#               script: |
-#                 mvn clean
-#                 mvn install
-#                 ls
-#           - task: ShellScript@2
-#             inputs:
-#               scriptPath: "shutdown.sh"
-#           - task: ShellScript@2
-#             inputs:
-#               scriptPath: "install.sh"
-#           - task: ShellScript@2
-#             inputs:
-#               scriptPath: "start.sh"
-
-#           - task: AzureStaticWebApp@0
-#             inputs:
-#               #  app_location: "$(System.DefaultWorkingDirectory)/src/target/classes/public/"
-#               app_location: "/src/main/java/com/smockin"
-#               # api_location: ""
-#               app_build_command: "start.sh"
-#               skip_api_build: true
-#               #app_artifact_location: "out"
-#               #output_location: "target"
-#               output_location: "*./working_dir/src/main/java/com/smockin/"
-#               azure_static_web_apps_api_token: $(storybook-mock-api-key)
+      - job: install
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+            # Write your commands here
+            
+        echo 'Hello world'
+  - stage: test_build
+    jobs:
+      -job: install
+       steps:
+       - task: Bash@3
+         inputs:
+           targetType: 'inline'
+           script: |
+             # Write your commands here
+             
+             echo 'Hello world'
