@@ -44,6 +44,7 @@ stages:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
+                  az extension add -n azure-devops  
                   filetodelete="filetodelete"
                   mystorage="mystorage616"
                   accountKey="kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA=="
