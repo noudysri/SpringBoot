@@ -30,21 +30,13 @@ stages:
     - job:
       steps:
         - task: AzureCLI@2
-          displayName: 'Install Azure CLI'
-          inputs:
-            azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-            scriptLocation: inlineScript
-            scriptType: 'bash'
-            inlineScript: |
-              curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-        - task: AzureCLI@2
           inputs:
             azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
                   az extension add -n azure-devops  
+                  Import-Module -Name Az.Profile -Force
                   filetodelete="filetodelete"
                   mystorage="mystorage616"
                   accountKey="kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA=="
