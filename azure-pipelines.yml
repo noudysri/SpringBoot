@@ -43,11 +43,11 @@ stages:
       #     targetType: 'inline'
       #     script: 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser'
 
-      # - task: PowerShell@2
-      #   displayName: 'Install Az module'
-      #   inputs:
-      #     targetType: 'inline'
-      #     script: 'Install-Module -Name Az.Storage -AllowClobber -Scope CurrentUser'
+      - task: PowerShell@2
+        displayName: 'Install Az module'
+        inputs:
+          targetType: 'inline'
+          script: 'Install-Module -Name Az.Storage -AllowClobber -Scope CurrentUser'
 
       - task: PowerShell@2
         inputs:
