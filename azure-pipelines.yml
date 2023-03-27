@@ -3,7 +3,7 @@ trigger: none
 pr: none
 
 pool:
-  vmimage: windows-latest
+  vmimage: ubuntu-latest
 
 # schedules:
 # - cron: "0 2 1-7 * SUN"
@@ -11,14 +11,6 @@ pool:
 #   branches:
 #     include:
 #     - master
-
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       # Write your commands here     
-#       $PSExecutionPolicyPreference = 'RemoteSigned'
-
 
 # - task: PowerShell@2
 #   displayName: 'Install Az module'
@@ -37,11 +29,17 @@ stages:
   jobs:
     - job:
       steps:
-      - task: PowerShell@2
-        displayName: 'Install Az module'
+      # - task: PowerShell@2
+      #   displayName: 'Install Az module'
+      #   inputs:
+      #     targetType: 'inline'
+      #     script: 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser'
+      - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser'
+          script: |
+            # Write your commands here     
+            $PSExecutionPolicyPreference = 'RemoteSigned'
 
       - task: PowerShell@2
         displayName: 'Install Az module'
