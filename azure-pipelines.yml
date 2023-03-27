@@ -2,8 +2,8 @@ trigger: none
 
 pr: none
 
-pool:
-  vmimage: ubuntu-latest
+# pool:
+#   vmimage: ubuntu-latest
 
 # schedules:
 # - cron: "0 2 1-7 * SUN"
@@ -51,6 +51,7 @@ stages:
                           az storage file delete -s $filetodelete -p $removefile
                       }
                   }
+                  
       # - task: PowerShell@2
       #   displayName: 'Install Az module'
       #   inputs:
