@@ -33,6 +33,7 @@ stages:
           displayName: 'Install Azure CLI'
           inputs:
             scriptLocation: inlineScript
+            scriptType: 'bash'
             inlineScript: |
               curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
