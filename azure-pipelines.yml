@@ -32,6 +32,7 @@ stages:
         - task: AzureCLI@2
           displayName: 'Install Azure CLI'
           inputs:
+            azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
             scriptLocation: inlineScript
             scriptType: 'bash'
             inlineScript: |
