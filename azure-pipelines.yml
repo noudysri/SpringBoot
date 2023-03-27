@@ -6,25 +6,27 @@ filetodelete='filetodelete'
 mystorage='mystorage616'
 accountKey='kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA=='
 
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      filetodelete='filetodelete'
-                          mystorage='mystorage616'
-                          accountKey='kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==''
-                          $filelist= az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
-                          $fileArray=$filelist | ConvertFrom-Json
-                          foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
-                          {
-                              $removefile = $file.name
-                              if ($removefile -ne $null)
-                              {
-                                  Write-Host "Removing file $removefile"
-                                  az storage file delete -s $filetodelete -p $removefile
-                              }
-                          }
-    addSpnToEnvironment: true
-    useGlobalConfig: true
+steps:
+
+    - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        filetodelete='filetodelete'
+                            mystorage='mystorage616'
+                            accountKey='kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==''
+                            $filelist= az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
+                            $fileArray=$filelist | ConvertFrom-Json
+                            foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
+                            {
+                                $removefile = $file.name
+                                if ($removefile -ne $null)
+                                {
+                                    Write-Host "Removing file $removefile"
+                                    az storage file delete -s $filetodelete -p $removefile
+                                }
+                            }
+      addSpnToEnvironment: true
+      useGlobalConfig: true
