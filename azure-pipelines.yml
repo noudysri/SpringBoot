@@ -37,10 +37,10 @@ stages:
             inlineScript: |
                   az extension add -n azure-devops  
                   Import-Module -Name Az.Profile -Force
-                  filetodelete="filetodelete"
-                  mystorage="mystorage616"
-                  accountKey="kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA=="
-                  $filelist= az storage file list -s $filetodelete --account-name $mystorage --account-key $accountKey
+                  filetodelete='filetodelete'
+                  mystorage='mystorage616'
+                  accountKey='kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==''
+                  $filelist= az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
                   $fileArray=$filelist | ConvertFrom-Json
                   foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
                   {
