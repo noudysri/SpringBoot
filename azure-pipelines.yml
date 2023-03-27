@@ -66,7 +66,7 @@ stages:
             $shareroot = Get-AzStorageFile -ShareName $shareName -Path . -context $ctx   
             $dirsToList += $shareroot   
               
-            # List files recursively and remove file older than 14 days   
+            # List files recursively and remove file older than 90 days   
             While ($dirsToList.Count -gt $DirIndex)  
             {  
                 $dir = $dirsToList[$DirIndex]  
@@ -82,7 +82,7 @@ stages:
                     $task = $file.CloudFile.FetchAttributesAsync()  
                     $task.Wait()  
               
-                    # remove file if it's older than 14 days.  
+                    # remove file if it's older than 94 days.  
                     if ($file.CloudFile.Properties.LastModified -lt (9Get-Date).AddDays(0))  
                     {  
                   Write-Host "file :",$file.Name  "is older than 0 days so removing it ..!"   
