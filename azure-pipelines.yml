@@ -25,32 +25,32 @@ pr: none
 #     script: 'Install-Module -Name Az -AllowClobber -Scope CurrentUser'
 
 stages:
-- stage: 
-  jobs:
-    - job:
-      steps:
-        - task: AzureCLI@2
-          inputs:
-            azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-            scriptType: 'bash'
-            scriptLocation: 'inlineScript'
-            inlineScript: |
-                  az extension add -n azure-devops  
-                  # Import-Module -Name Az.Profile -Force
-                  filetodelete='filetodelete'
-                  mystorage='mystorage616'
-                  accountKey='kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==''
-                  $filelist= az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
-                  $fileArray=$filelist | ConvertFrom-Json
-                  foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
-                  {
-                      $removefile = $file.name
-                      if ($removefile -ne $null)
-                      {
-                          Write-Host "Removing file $removefile"
-                          az storage file delete -s $filetodelete -p $removefile
-                      }
-                  }
+  - stage: 
+    jobs:
+      - job:
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                    az extension add -n azure-devops  
+                    # Import-Module -Name Az.Profile -Force
+                    filetodelete='filetodelete'
+                    mystorage='mystorage616'
+                    accountKey='kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==''
+                    $filelist= az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
+                    $fileArray=$filelist | ConvertFrom-Json
+                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
+                    {
+                        $removefile = $file.name
+                        if ($removefile -ne $null)
+                        {
+                            Write-Host "Removing file $removefile"
+                            az storage file delete -s $filetodelete -p $removefile
+                        }
+                    }
                   
       # - task: PowerShell@2
       #   displayName: 'Install Az module'
