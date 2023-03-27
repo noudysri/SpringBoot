@@ -37,11 +37,11 @@ stages:
   jobs:
     - job:
       steps:
-      # - task: PowerShell@2
-      #   displayName: 'Install Az module'
-      #   inputs:
-      #     targetType: 'inline'
-      #     script: 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser'
+      - task: PowerShell@2
+        displayName: 'Install Az module'
+        inputs:
+          targetType: 'inline'
+          script: 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser'
 
       - task: PowerShell@2
         displayName: 'Install Az module'
