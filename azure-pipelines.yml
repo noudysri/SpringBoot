@@ -46,16 +46,16 @@ stages:
                 write-host $fileArray
                 foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
                     {
-                        $removefile = $file.name
+                       $removefile = $file.name
                         write-host $file.name 
                           write-host $file.isDirectory 
-                        if ($removefile -ne $null -And $file.isDirectory -ne "True")
+                          if ($removefile -ne $null -And $file.isDirectory -ne "True")
                         {
                             Write-Host "Removing file $removefile"
                             az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
                         }
                     }
-                foreach ($folder in $fileArray | Where-Object {$_.properties.isDirectory -eq "True"})
+                foreach ($folder in $fileArray | Where-Object {$_.isDirectory -eq "True"})
                     {
                         $removefolder = $folder.name
                         $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey -path $removefolder
