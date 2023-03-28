@@ -70,7 +70,7 @@ stages:
                                 if ($removefile -ne $null -And $file.isDirectory -ne "True")
                                 {
                                     Write-Host "Removing file $removefile"
-                                    az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
+                                    az storage file delete -s $myshare -p  $removefolder/$removefile --account-name $accountName --account-key $accountKey
                                 }
                     }
                     }    
