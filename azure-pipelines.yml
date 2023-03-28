@@ -47,8 +47,8 @@ stages:
                 foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddDays(-1))})
                     {
                         $removefile = $file.name
-                          write-host $file.isDirectory 
-                        if ($removefile -ne $null -And $file.isDirectory -eq False)
+                          write-host $file.fileAttributes 
+                        if ($removefile -ne $null -And $file.fileAttributes -ne "Directory")
                         {
                             Write-Host "Removing file $removefile"
                             az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
