@@ -48,7 +48,7 @@ stages:
                     {
                         $removefile = $file.name
                           write-host $file.isDirectory 
-                        if ($removefile -ne $null -And $file.isDirectory -eq "False")
+                        if ($removefile -ne $null -And $file.isDirectory -eq False)
                         {
                             Write-Host "Removing file $removefile"
                             az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
