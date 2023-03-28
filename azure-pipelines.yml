@@ -41,7 +41,7 @@ stages:
                 $accountKey =  "$(accountKey)" 
 
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
-
+                       write-host $filelist
                 $fileArray = $filelist | ConvertFrom-Json
                 write-host $fileArray
                 foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
