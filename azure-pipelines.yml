@@ -26,7 +26,7 @@ stages:
             azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
-            inlineScript: 'az keyvault secret --name consumerkey --vault-name sfscTest --value "$(mystorage)$(org)"'
+            inlineScript: 'az keyvault secret --name orgId --vault-name sfscTest --value "$(mystorage)$(org)"'
           # - task: AzurePowerShell@5
           #   inputs:
           #     azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
