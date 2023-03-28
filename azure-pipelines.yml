@@ -21,13 +21,7 @@ stages:
     jobs:
       - job:
         steps:
-            - task: AzurePowerShell@5
-              inputs:
-                azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-                ScriptType: 'InlineScript'
-                Inline: 'Install-Module Az.Accounts -Scope CurrentUser -Force'
-                azurePowerShellVersion: 'LatestVersion'
-
+ 
             - task: AzurePowerShell@5
               inputs:
                 azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
