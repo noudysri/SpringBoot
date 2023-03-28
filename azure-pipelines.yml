@@ -1,13 +1,13 @@
 pool:
   vmImage: ubuntu-latest
 
-variables:
-- name: myshare
-  value: filetodelete
-- name: accountname
-  value: mystorage616
-- name: accountkey
-  value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
+# variables:
+# - name: myshare
+#   value: filetodelete
+# - name: accountname
+#   value: mystorage616
+# - name: accountkey
+#   value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 
 trigger: none
 pr: none
@@ -16,23 +16,24 @@ stages:
     jobs:
       - job:
         steps:
-          - task: AzureCLI@2
+          - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
+              ScriptType: 'InlineScript'
+              Inline: |
+                $myshare = "mystorageshare"
+                $accountName = "mystorageac"
+                $accountKey = "+lVt/N8Ld+90afGetaq8Ko5CUvHr47ZDqnA9O1fOXtExq9YMhBLNNHrXoPAJn/tDuqjzJwh1ymg3+AStjXSntg=="
+                
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
-                Write-Host $filelist
-                    $fileArray = $filelist | ConvertFrom-Json
-                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
+                
+                $fileArray = $filelist | ConvertFrom-Json
+                foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
                     {
                         $removefile = $file.name
                         if ($removefile -ne $null)
                         {
                             Write-Host "Removing file $removefile"
-                            az storage file delete -s $myshare -p $removefile
+                            az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
                         }
                     }
-              addSpnToEnvironment: true
-              useGlobalConfig: true
