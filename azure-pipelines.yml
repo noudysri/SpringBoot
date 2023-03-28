@@ -58,7 +58,7 @@ stages:
                 foreach ($folder in $fileArray | Where-Object {$_.isDirectory -eq "True"})
                     {
                         $removefolder = $folder.name
-                        $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey -path $removefolder
+                        $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey --path $removefolder
                         $fileArray = $filelist | ConvertFrom-Json
                
                         write-host $fileArray
