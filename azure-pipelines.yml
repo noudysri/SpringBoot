@@ -18,13 +18,12 @@ stages:
     jobs:
       - job:
         steps:
-          - task: AzureCLI@2
+          - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
+              ScriptType: 'InlineScript'
+              Inline: |
+                $filelist = az storage file list -s $filetodelete --account-name $mystorage --account-key $accountKey
                     $fileArray = $filelist | ConvertFrom-Json
                     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
                     {
@@ -35,5 +34,23 @@ stages:
                             az storage file delete -s $myshare -p $removefile
                         }
                     }
-              addSpnToEnvironment: true
-              useGlobalConfig: true
+              azurePowerShellVersion: 'LatestVersion'
+          # - task: AzureCLI@2
+          #   inputs:
+          #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+          #     scriptType: 'bash'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: |
+          #       $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
+          #           $fileArray = $filelist | ConvertFrom-Json
+          #           foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
+          #           {
+          #               $removefile = $file.name
+          #               if ($removefile -ne $null)
+          #               {
+          #                   Write-Host "Removing file $removefile"
+          #                   az storage file delete -s $myshare -p $removefile
+          #               }
+          #           }
+          #     addSpnToEnvironment: true
+          #     useGlobalConfig: true
