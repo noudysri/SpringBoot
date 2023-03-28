@@ -25,15 +25,31 @@ stages:
               azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
               ScriptType: 'InlineScript'
               Inline: |
-                $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
-                    $fileArray = $filelist | ConvertFrom-Json
-                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                # $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
+                #     $fileArray = $filelist | ConvertFrom-Json
+                #     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                #     {
+                #         $removefile = $file.name
+                #         if ($removefile -ne $null)
+                #         {
+                #             Write-Host "Removing file $removefile"
+                #             az storage file delete -s 'filetodelete' -p $removefile
+                #         }
+                #     }
+                $myshare = $(filetodelete)
+                $accountName = $(mystorage)
+                $accountKey =  $(accountKey)
+
+                $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
+
+                $fileArray = $filelist | ConvertFrom-Json
+                foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
                     {
                         $removefile = $file.name
                         if ($removefile -ne $null)
                         {
                             Write-Host "Removing file $removefile"
-                            az storage file delete -s 'filetodelete' -p $removefile
+                            az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
                         }
                     }
               azurePowerShellVersion: 'LatestVersion'
