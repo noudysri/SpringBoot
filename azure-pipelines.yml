@@ -27,7 +27,7 @@ stages:
               Inline: |
                 # $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
                 #     $fileArray = $filelist | ConvertFrom-Json
-                #     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                #     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
                 #     {
                 #         $removefile = $file.name
                 #         if ($removefile -ne $null)
