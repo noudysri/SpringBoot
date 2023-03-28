@@ -23,6 +23,7 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
+                Write-Host filelist
                     $fileArray = $filelist | ConvertFrom-Json
                     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(0))})
                     {
