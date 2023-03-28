@@ -43,6 +43,7 @@ stages:
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
 
                 $fileArray = $filelist | ConvertFrom-Json
+                write-host $fileArray
                 foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
                     {
                         $removefile = $file.name
