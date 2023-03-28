@@ -6,6 +6,7 @@ trigger: none
 pr: none
 
 variables:
+  - group: vartest
   - name: filetodelete
     value: filetodelete
   - name: mystorage
@@ -20,77 +21,83 @@ stages:
     jobs:
       - job:
         steps:
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-              ScriptType: 'InlineScript'
-              Inline: |
-                # $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
-                #     $fileArray = $filelist | ConvertFrom-Json
-                #     foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddDays(0))})
-                #     {
-                #         $removefile = $file.name
-                #         if ($removefile -ne $null)
-                #         {
-                #             Write-Host "Removing file $removefile"
-                #             az storage file delete -s 'filetodelete' -p $removefile
-                #         }
-                #     }
-                $myshare = "$(filetodelete)" 
-                $accountName ="$(mystorage)" 
-                $accountKey =  "$(accountKey)" 
-
-                $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
-                       write-host $filelist
-                $fileArray = $filelist | ConvertFrom-Json
-                write-host $fileArray
-                foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
-                    {
-                       $removefile = $file.name
-                        write-host $file.name 
-                          write-host $file.isDirectory 
-                          if ($removefile -ne $null -And $file.isDirectory -ne "True")
-                        {
-                            Write-Host "Removing file $removefile"
-                            az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
-                        }
-                    }
-                foreach ($folder in $fileArray | Where-Object {$_.isDirectory -eq "True"})
-                    {
-                        $removefolder = $folder.name
-                        $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey --path $removefolder
-                        $fileArray = $filelist | ConvertFrom-Json
-               
-                        write-host $fileArray
-                        foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
-                            {
-                                $removefile = $file.name
-                                write-host $file.name 
-                                  write-host $file.isDirectory 
-                                if ($removefile -ne $null -And $file.isDirectory -ne "True")
-                                {
-                                    Write-Host "Removing file $removefile"
-                                    az storage file delete -s $myshare -p  $removefolder/$removefile --account-name $accountName --account-key $accountKey
-                                }
-                    }
-                    }    
-              azurePowerShellVersion: 'LatestVersion'
-          # - task: AzureCLI@2
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: 'az keyvault secret --name consumerkey --vault-name sfscTest --value "$(mystorage)$(org)"'
+          # - task: AzurePowerShell@5
           #   inputs:
-          #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-          #     scriptType: 'bash'
-          #     scriptLocation: 'inlineScript'
-          #     inlineScript: |
-          #       $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
-          #           $fileArray = $filelist | ConvertFrom-Json
-          #           foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
+          #     azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+          #     ScriptType: 'InlineScript'
+          #     Inline: |
+          #       # $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
+          #       #     $fileArray = $filelist | ConvertFrom-Json
+          #       #     foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddDays(0))})
+          #       #     {
+          #       #         $removefile = $file.name
+          #       #         if ($removefile -ne $null)
+          #       #         {
+          #       #             Write-Host "Removing file $removefile"
+          #       #             az storage file delete -s 'filetodelete' -p $removefile
+          #       #         }
+          #       #     }
+          #       $myshare = "$(filetodelete)" 
+          #       $accountName ="$(mystorage)" 
+          #       $accountKey =  "$(accountKey)" 
+
+          #       $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
+          #              write-host $filelist
+          #       $fileArray = $filelist | ConvertFrom-Json
+          #       write-host $fileArray
+          #       foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
           #           {
-          #               $removefile = $file.name
-          #               if ($removefile -ne $null)
+          #              $removefile = $file.name
+          #               write-host $file.name 
+          #                 write-host $file.isDirectory 
+          #                 if ($removefile -ne $null -And $file.isDirectory -ne "True")
           #               {
           #                   Write-Host "Removing file $removefile"
-          #                   az storage file delete -s $myshare -p $removefile
+          #                   az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
           #               }
           #           }
-          #     addSpnToEnvironment: true
+          #       foreach ($folder in $fileArray | Where-Object {$_.isDirectory -eq "True"})
+          #           {
+          #               $removefolder = $folder.name
+          #               $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey --path $removefolder
+          #               $fileArray = $filelist | ConvertFrom-Json
+               
+          #               write-host $fileArray
+          #               foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
+          #                   {
+          #                       $removefile = $file.name
+          #                       write-host $file.name 
+          #                         write-host $file.isDirectory 
+          #                       if ($removefile -ne $null -And $file.isDirectory -ne "True")
+          #                       {
+          #                           Write-Host "Removing file $removefile"
+          #                           az storage file delete -s $myshare -p  $removefolder/$removefile --account-name $accountName --account-key $accountKey
+          #                       }
+          #           }
+          #           }    
+          #     azurePowerShellVersion: 'LatestVersion'
+          # # - task: AzureCLI@2
+          # #   inputs:
+          # #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+          # #     scriptType: 'bash'
+          # #     scriptLocation: 'inlineScript'
+          # #     inlineScript: |
+          # #       $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
+          # #           $fileArray = $filelist | ConvertFrom-Json
+          # #           foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
+          # #           {
+          # #               $removefile = $file.name
+          # #               if ($removefile -ne $null)
+          # #               {
+          # #                   Write-Host "Removing file $removefile"
+          # #                   az storage file delete -s $myshare -p $removefile
+          # #               }
+          # #           }
+          # #     addSpnToEnvironment: true
           #     useGlobalConfig: true
