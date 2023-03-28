@@ -9,7 +9,7 @@ variables:
   - name: filetodelete
     value: filetodelete
   - name: mystorage
-    value: mystorage
+    value: mystorage616
   - name: accountkey
     value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
  
@@ -20,7 +20,7 @@ stages:
         steps:
           - task: AzurePowerShell@5
             inputs:
-              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+              azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
               ScriptType: 'InlineScript'
               Inline: |
                 $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
