@@ -36,9 +36,9 @@ stages:
                 #             az storage file delete -s 'filetodelete' -p $removefile
                 #         }
                 #     }
-                $myshare = $(filetodelete)
-                $accountName = $(mystorage)
-                $accountKey =  $(accountKey)
+                $myshare = "$(filetodelete)" 
+                $accountName ="$(mystorage)" 
+                $accountKey =  "$(accountKey)" 
 
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
 
