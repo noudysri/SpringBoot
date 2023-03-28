@@ -31,7 +31,7 @@ stages:
                         if ($removefile -ne $null)
                         {
                             Write-Host "Removing file $removefile"
-                            az storage file delete -s $myshare -p $removefile
+                            az storage file delete -s $filetodelete -p $removefile
                         }
                     }
               azurePowerShellVersion: 'LatestVersion'
