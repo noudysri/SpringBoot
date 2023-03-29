@@ -3,13 +3,13 @@ pool:
 
 variables:
 - name: myshare
-  value: filetodelete
+  value: 'filetodelete'
 - name: accountname
-  value: 6mystorageaccount
+  value: '6mystorageaccount'
 - name: accountkey
-  value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
+  value: 'CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg=='
 - name: storageconnection
-  value: DefaultEndpointsProtocol=https;AccountName=6mystorageaccount;AccountKey=CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==;EndpointSuffix=core.windows.net
+  value: 'DefaultEndpointsProtocol=https;AccountName=6mystorageaccount;AccountKey=CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==;EndpointSuffix=core.windows.net'
 
 trigger: none
 pr: none
@@ -42,14 +42,14 @@ stages:
               ScriptType: 'InlineScript'
               Inline: | 
                 $filelist = az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare) 
-                    $fileArray = $filelist | ConvertFrom-Json
-                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                $fileArray = $filelist | ConvertFrom-Json
+                foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                {
+                    $removefile = $file.name
+                    if ($removefile -ne $null)
                     {
-                        $removefile = $file.name
-                        if ($removefile -ne $null)
-                        {
-                            Write-Host "Removing file $removefile"
-                            az storage file delete -s $(myshare) -p $removefile --account-name $(accountname) --connection-string $(storageconnection)
-                        }
+                        Write-Host "Removing file $removefile"
+                        az storage file delete --account-name $(accountname) --connection-string $(storageconnection) -share-name $(myshare) -p $removefile 
                     }
+                }
               preferredAzurePowerShellVersion: '1.0.0'
