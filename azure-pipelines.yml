@@ -16,25 +16,20 @@ stages:
     jobs:
       - job:
         steps:
-        - task: AzurePowerShell@5
-          inputs:
-            azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-            ScriptType: 'InlineScript'
-            Inline: |
-              $myshare = "mystorageshare"
-                $accountName = "mystorageac"
-                $accountKey = "+lVt/N8Ld+90afGetaq8Ko5CUvHr47ZDqnA9O1fOXtExq9YMhBLNNHrXoPAJn/tDuqjzJwh1ymg3+AStjXSntg=="
-              
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+              ScriptType: 'InlineScript'
+              Inline: |
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
-              
-                $fileArray = $filelist | ConvertFrom-Json
-                foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
+                    $fileArray = $filelist | ConvertFrom-Json
+                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
                     {
                         $removefile = $file.name
                         if ($removefile -ne $null)
                         {
                             Write-Host "Removing file $removefile"
-                            az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
+                            az storage file delete -s $myshare -p $removefile
                         }
                     }
-            preferredAzurePowerShellVersion: '1'
+              preferredAzurePowerShellVersion: '1.0.0'
