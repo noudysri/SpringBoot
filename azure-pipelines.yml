@@ -16,23 +16,23 @@ stages:
     jobs:
       - job:
         steps:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |
-                echo $accountkey
-                echo $accountname
-                echo $myshare
-                echo "--------------------"
-                echo $(accountkey)
-                echo $(accountname)
-                echo $(myshare)
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: 'Azure subscription'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: 'az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare)'
+          # - task: Bash@3
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       echo $accountkey
+          #       echo $accountname
+          #       echo $myshare
+          #       echo "--------------------"
+          #       echo $(accountkey)
+          #       echo $(accountname)
+          #       echo $(myshare)
+          # - task: AzureCLI@2
+          #   inputs:
+          #     azureSubscription: 'Azure subscription'
+          #     scriptType: 'bash'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: 'az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare)'
 
           - task: AzurePowerShell@5
             inputs:
@@ -47,7 +47,7 @@ stages:
                         if ($removefile -ne $null)
                         {
                             Write-Host "Removing file $removefile"
-                            az storage file delete -s $myshare -p $removefile
+                            az storage file delete -s $(myshare) -p $removefile
                         }
                     }
               preferredAzurePowerShellVersion: '1.0.0'
