@@ -5,7 +5,7 @@ variables:
 - name: myshare
   value: filetodelete
 - name: accountname
-  value: mystorage616
+  value: 6mystorageaccount
 - name: accountkey
   value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 
@@ -23,7 +23,7 @@ stages:
               Inline: |
                 $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
                     $fileArray = $filelist | ConvertFrom-Json
-                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
+                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
                     {
                         $removefile = $file.name
                         if ($removefile -ne $null)
@@ -32,4 +32,4 @@ stages:
                             az storage file delete -s $myshare -p $removefile
                         }
                     }
-              preferredAzurePowerShellVersion: 1.0.1
+              # preferredAzurePowerShellVersion: 1.0.1
