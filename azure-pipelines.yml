@@ -1,13 +1,13 @@
 pool:
   vmImage: ubuntu-latest
 
-variables:
-- name: myshare
-  value: filetodelete
-- name: accountname
-  value: 6mystorageaccount
-- name: accountkey
-  value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
+# variables:
+# - name: myshare
+#   value: filetodelete
+# - name: accountname
+#   value: 6mystorageaccount
+# - name: accountkey
+#   value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 
 trigger: none
 pr: none
@@ -22,7 +22,7 @@ stages:
           #     ScriptType: 'InlineScript'
           #     Inline: |
             - script: |
-                az storage file list -share-name filetodelete --account-name 6mystorageaccount  --account-key kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
+                az storage file list -share-name 'filetodelete' --account-name '6mystorageaccount'  --account-key kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 
               #   $filelist = az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
               #       $fileArray = $filelist | ConvertFrom-Json
