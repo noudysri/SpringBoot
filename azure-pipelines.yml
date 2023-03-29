@@ -21,7 +21,7 @@ stages:
               azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
-              inlineScript: 'az account show'
+              inlineScript: 'az group create --name test-rg --location eastus'
 
               # - task: AzurePowerShell@5
               #   inputs:
