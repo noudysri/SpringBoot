@@ -16,12 +16,14 @@ stages:
     jobs:
       - job:
         steps:
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-              ScriptType: 'InlineScript'
-              Inline: |
-                az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
+          # - task: AzurePowerShell@5
+          #   inputs:
+          #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+          #     ScriptType: 'InlineScript'
+          #     Inline: |
+            - script: |
+              az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
+              
               #   $filelist = az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
               #       $fileArray = $filelist | ConvertFrom-Json
               #       foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
