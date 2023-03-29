@@ -16,6 +16,17 @@ stages:
     jobs:
       - job:
         steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo $accountkey
+                echo $accountname
+                echo $myshare
+                echo "--------------------"
+                echo $(accountkey)
+                echo $(accountname)
+                echo $(myshare)
           - task: AzureCLI@2
             inputs:
               azureSubscription: 'Azure subscription'
