@@ -32,4 +32,4 @@ stages:
                             az storage file delete -s $myshare -p $removefile
                         }
                     }
-              preferredAzurePowerShellVersion: '2'
+              preferredAzurePowerShellVersion: 1.0.1
