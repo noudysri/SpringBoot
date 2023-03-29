@@ -32,14 +32,14 @@ stages:
               azureSubscription: 'Azure subscription'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
-              inlineScript: 'az storage file list --account-key $accountkey --account-name $accountname --share-name filetodelete'
+              inlineScript: 'az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare)'
 
           - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
               Inline: | 
-                $filelist = az storage file list --account-key $accountkey --account-name $accountname --share-name filetodelete 
+                $filelist = az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare) 
                     $fileArray = $filelist | ConvertFrom-Json
                     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
                     {
