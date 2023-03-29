@@ -8,6 +8,8 @@ variables:
   value: 6mystorageaccount
 - name: accountkey
   value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
+- name: storageconnection
+  value: DefaultEndpointsProtocol=https;AccountName=6mystorageaccount;AccountKey=CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==;EndpointSuffix=core.windows.net
 
 trigger: none
 pr: none
@@ -39,7 +41,7 @@ stages:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
               Inline: | 
-                $filelist = az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare) 
+                $filelist = az storage file list --account-key $(accountkey) --account-name $(accountname) --connection-string $(storageconnection) --share-name $(myshare) 
                     $fileArray = $filelist | ConvertFrom-Json
                     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
                     {
@@ -47,7 +49,7 @@ stages:
                         if ($removefile -ne $null)
                         {
                             Write-Host "Removing file $removefile"
-                            az storage file delete -s $(myshare) -p $removefile
+                            az storage file delete -s $(myshare) -p $removefile --account-name $(accountname) --account-key $(accountkey) --connection-string $(storageconnection)
                         }
                     }
               preferredAzurePowerShellVersion: '1.0.0'
