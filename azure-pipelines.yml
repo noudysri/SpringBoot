@@ -16,13 +16,12 @@ stages:
     jobs:
       - job:
         steps:
-        - task: AzurePowerShell@5
-          inputs:
-            azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-            ScriptType: 'InlineScript'
-            Inline: |
-              az account list
-            preferredAzurePowerShellVersion: '1.0.0'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: 'az account show'
 
               # - task: AzurePowerShell@5
               #   inputs:
