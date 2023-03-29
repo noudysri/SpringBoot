@@ -22,8 +22,8 @@ stages:
           #     ScriptType: 'InlineScript'
           #     Inline: |
             - script: |
-              az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
-              
+                az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
+
               #   $filelist = az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
               #       $fileArray = $filelist | ConvertFrom-Json
               #       foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
