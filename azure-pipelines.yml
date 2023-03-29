@@ -21,18 +21,7 @@ stages:
               azureSubscription: 'Azure subscription'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
-              inlineScript: |
-                $filelist = az storage file list --account-key $accountkey --account-name $accountname --share-name filetodelete 
-                                    $fileArray = $filelist | ConvertFrom-Json
-                                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
-                                    {
-                                        $removefile = $file.name
-                                        if ($removefile -ne $null)
-                                        {
-                                            Write-Host "Removing file $removefile"
-                                            az storage file delete -s $myshare -p $removefile
-                                        }
-                                    }
+              inlineScript: 'az storage file list --share-name filetodelete --account-name 6mystorageaccount --account-key CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg='
 
           - task: AzurePowerShell@5
             inputs:
