@@ -1,13 +1,13 @@
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
-# variables:
-# - name: myshare
-#   value: filetodelete
-# - name: accountname
-#   value: 6mystorageaccount
-# - name: accountkey
-#   value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
+variables:
+- name: myshare
+  value: filetodelete
+- name: accountname
+  value: 6mystorageaccount
+- name: accountkey
+  value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 
 trigger: none
 pr: none
@@ -16,23 +16,20 @@ stages:
     jobs:
       - job:
         steps:
-          # - task: AzurePowerShell@5
-          #   inputs:
-          #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-          #     ScriptType: 'InlineScript'
-          #     Inline: |
-            - script: |
-                az storage file list --share-name filetodelete --account-name 6mystorageaccount --account-key kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
-
-              #   $filelist = az storage file list -share-name $myshare --account-name $accountName --account-key $accountKey
-              #       $fileArray = $filelist | ConvertFrom-Json
-              #       foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
-              #       {
-              #           $removefile = $file.name
-              #           if ($removefile -ne $null)
-              #           {
-              #               Write-Host "Removing file $removefile"
-              #               az storage file delete -s $myshare -p $removefile
-              #           }
-              #       }
-              # preferredAzurePowerShellVersion: '1.0.0'
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+              ScriptType: 'InlineScript'
+              Inline: |
+                $filelist = az storage file list -share-name $myshare --account-name $accountName --path D:\ --account-key $accountKey
+                    $fileArray = $filelist | ConvertFrom-Json
+                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                    {
+                        $removefile = $file.name
+                        if ($removefile -ne $null)
+                        {
+                            Write-Host "Removing file $removefile"
+                            az storage file delete -s $myshare -p $removefile
+                        }
+                    }
+              preferredAzurePowerShellVersion: '1.0.0'
