@@ -21,6 +21,7 @@ stages:
               azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
               ScriptType: 'InlineScript'
               Inline: |
+                az account set --subscription "0bb04acb-8639-4207-ab1c-2cbab5516176" 
                 $filelist = az storage file list --share-name $myshare --account-name $accountname --account-key $accountkey
                     $fileArray = $filelist | ConvertFrom-Json
                     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
