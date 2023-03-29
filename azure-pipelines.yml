@@ -21,7 +21,7 @@ stages:
               azureSubscription: 'Azure subscription'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
-              inlineScript: 'az storage file list --share-name filetodelete --account-name 6mystorageaccount --account-key CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg='
+              inlineScript: 'az storage file list --account-key $accountkey --account-name $accountname --share-name filetodelete'
 
           - task: AzurePowerShell@5
             inputs:
