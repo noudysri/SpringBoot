@@ -18,26 +18,25 @@ stages:
         steps:
           - task: AzureCLI@2
             inputs:
-              azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+              azureSubscription: 'Azure subscription'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
-              inlineScript: 'az group delete--name test-rg'
+              inlineScript: 'az account show'
 
-              # - task: AzurePowerShell@5
-              #   inputs:
-              #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-              #     ScriptType: 'InlineScript'
-              #     Inline: |
-              #       az account set --subscription "0bb04acb-8639-4207-ab1c-2cbab5516176" 
-              #       $filelist = az storage file list --share-name $myshare --account-name $accountname --account-key $accountkey
-              #           $fileArray = $filelist | ConvertFrom-Json
-              #           foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
-              #           {
-              #               $removefile = $file.name
-              #               if ($removefile -ne $null)
-              #               {
-              #                   Write-Host "Removing file $removefile"
-              #                   az storage file delete -s $myshare -p $removefile
-              #               }
-              #           }
-              #     preferredAzurePowerShellVersion: '1.0.0'
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure subscription'
+              ScriptType: 'InlineScript'
+              Inline: |
+                $filelist = az storage file list --share-name $myshare --account-name $accountname --account-key $accountkey
+                    $fileArray = $filelist | ConvertFrom-Json
+                    foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
+                    {
+                        $removefile = $file.name
+                        if ($removefile -ne $null)
+                        {
+                            Write-Host "Removing file $removefile"
+                            az storage file delete -s $myshare -p $removefile
+                        }
+                    }
+              preferredAzurePowerShellVersion: '1.0.0'
