@@ -49,7 +49,7 @@ stages:
                     if ($removefile -ne $null)
                     {
                         Write-Host "Removing file $removefile"
-                        az storage file delete --account-name $(accountname) --connection-string $(storageconnection) -share-name $(myshare) --path '~/clouddrive/$removefile'  
+                        az storage file delete --account-name $(accountname) --connection-string $(storageconnection) --share-name $(myshare) --path $removefile
                     }
                 }
               preferredAzurePowerShellVersion: '1.0.0'
