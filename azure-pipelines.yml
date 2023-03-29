@@ -7,7 +7,7 @@ variables:
 - name: accountname
   value: 6mystorageaccount
 - name: accountkey
-  value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
+  value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
 
 trigger: none
 pr: none
@@ -21,7 +21,7 @@ stages:
               azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
               ScriptType: 'InlineScript'
               Inline: |
-                $filelist = az storage file list -share-name $myshare --account-name $accountName --path D:\ --account-key $accountKey
+                $filelist = az storage file list --share-name $myshare --account-name $accountname --account-key $accountkey
                     $fileArray = $filelist | ConvertFrom-Json
                     foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-1))})
                     {
