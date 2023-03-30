@@ -40,11 +40,14 @@ stages:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
               Inline: 'Install-Module MSOnline'
+              preferredAzurePowerShellVersion: '1.0.0'
+
           - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
               Inline: 'Import-Module MSOnline'
+              preferredAzurePowerShellVersion: '1.0.0'
           - task: AzurePowerShell@5
             inputs:
               ScriptType: 'InlineScript'
