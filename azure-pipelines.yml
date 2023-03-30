@@ -22,133 +22,242 @@ stages:
       - job:
         steps:
  
-            - task: AzurePowerShell@5
-              inputs:
-                azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-                ScriptType: 'InlineScript'
-                Inline: |
-                  $StorageAccountName="mystorage61"  
-                  $ResourceGroupName="MYNEWRG6"  
-                  $fileshareName = "filetodelete"  
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure subscription'
+              ScriptType: 'InlineScript'
+              Inline: |
+                $ctx = New-AzStorageContext -6mystorageaccount $accountName -+lVt/N8Ld+90afGetaq8Ko5CUvHr47ZDqnA9O1fOXtExq9YMhBLNNHrXoPAJn/tDuqjzJwh1ymg3+AStjXSntg== $key  
+                $shareName = filetodelete  
                   
-                    $StorageAccountAccessKey = Get-AzStorageAccountKey -ResourceGroupName $ResourceGroupName -AccountName $StorageAccountName | Where-Object {$_.KeyName -eq "key1"}  
+                $DirIndex = 0  
+                $dirsToList = New-Object System.Collections.Generic.List[System.Object]  
                   
-                    $ctx = New-AzStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountAccessKey.Value  
+                # Get share root Dir  
+                $shareroot = Get-AzStorageFile -ShareName $shareName -Path . -context $ctx   
+                $dirsToList += $shareroot   
                   
-                  $DirIndex = 0  
-                  $dirsToList = New-Object System.Collections.Generic.List[System.Object]  
-                    
-                  # Get share root Dir  
-                  $shareroot = Get-AzStorageFile -ShareName $shareName -Path . -context $ctx   
-                  $dirsToList += $shareroot   
-                    
-                  # List files recursively and remove file older than 14 days   
-                  While ($dirsToList.Count -gt $DirIndex)  
-                  {  
-                      $dir = $dirsToList[$DirIndex]  
-                      $DirIndex ++  
-                      $fileListItems = $dir | Get-AzStorageFile  
-                      $dirsListOut = $fileListItems | where {$_.GetType().Name -eq "AzureStorageFileDirectory"}  
-                      $dirsToList += $dirsListOut  
-                      $files = $fileListItems | where {$_.GetType().Name -eq "AzureStorageFile"}  
-                    
-                      foreach($file in $files)  
-                      {  
-                          # Fetch Attributes of each file and output  
-                          $task = $file.CloudFile.FetchAttributesAsync()  
-                          $task.Wait()  
-                    
-                          # remove file if it's older than 14 days.  
-                          if ($file.CloudFile.Properties.LastModified -lt (9Get-Date).AddDays(0))  
-                          {  
-                        Write-Host "file :",$file.Name  "is older than 0 days so removing it ..!"   
-                              ## print the file LMT  
-                              # $file | Select @{ Name = "Uri"; Expression = { $_.CloudFile.SnapshotQualifiedUri} }, @{ Name = "LastModified"; Expression = { $_.CloudFile.Properties.LastModified } }   
-                    
-                              # remove file  
-                              $file | Remove-AzStorageFile  
-                          }  
-                      }  
-                      #Debug log  
-                      # Write-Host  $DirIndex $dirsToList.Length  $dir.CloudFileDirectory.SnapshotQualifiedUri.ToString()   
-                  }
+                # List files recursively and remove file older than 14 days   
+                While ($dirsToList.Count -gt $DirIndex)  
+                {  
+                    $dir = $dirsToList[$DirIndex]  
+                    $DirIndex ++  
+                    $fileListItems = $dir | Get-AzStorageFile  
+                    $dirsListOut = $fileListItems | where {$_.GetType().Name -eq "AzureStorageFileDirectory"}  
+                    $dirsToList += $dirsListOut  
+                    $files = $fileListItems | where {$_.GetType().Name -eq "AzureStorageFile"}  
+                  
+                    foreach($file in $files)  
+                    {  
+                        # Fetch Attributes of each file and output  
+                        $task = $file.CloudFile.FetchAttributesAsync()  
+                        $task.Wait()  
+                  
+                        # remove file if it's older than 14 days.  
+                        if ($file.CloudFile.Properties.LastModified -lt (Get-Date).AddDays(-1))  
+                        {  
+                            ## print the file LMT  
+                            # $file | Select @{ Name = "Uri"; Expression = { $_.CloudFile.SnapshotQualifiedUri} }, @{ Name = "LastModified"; Expression = { $_.CloudFile.Properties.LastModified } }   
+                  
+                            # remove file  
+                            $file | Remove-AzStorageFile  
+                        }  
+                    }  
+                    #Debug log  
+                    # Write-Host  $DirIndex $dirsToList.Length  $dir.CloudFileDirectory.SnapshotQualifiedUri.ToString()   
+                }
+              azurePowerShellVersion: 'LatestVersion'
 
-        # - task: AzureCLI@2
-        #   inputs:
-        #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-        #     scriptType: 'bash'
-        #     scriptLocation: 'inlineScript'
-        #   # - task: AzurePowerShell@5
-          #   inputs:
-          #     azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-          #     ScriptType: 'InlineScript'
-          #     Inline: |
-          #       # $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
-          #       #     $fileArray = $filelist | ConvertFrom-Json
-          #       #     foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddDays(0))})
-          #       #     {
-          #       #         $removefile = $file.name
-          #       #         if ($removefile -ne $null)
-          #       #         {
-          #       #             Write-Host "Removing file $removefile"
-          #       #             az storage file delete -s 'filetodelete' -p $removefile
-          #       #         }
-          #       #     }
-          #       $myshare = "$(filetodelete)" 
-          #       $accountName ="$(mystorage)" 
-          #       $accountKey =  "$(accountKey)" 
 
-          #       $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
-          #              write-host $filelist
-          #       $fileArray = $filelist | ConvertFrom-Json
-          #       write-host $fileArray
-          #       foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
-          #           {
-          #              $removefile = $file.name
-          #               write-host $file.name 
-          #                 write-host $file.isDirectory 
-          #                 if ($removefile -ne $null -And $file.isDirectory -ne "True")
-          #               {
-          #                   Write-Host "Removing file $removefile"
-          #                   az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
-          #               }
-          #           }
-          #       foreach ($folder in $fileArray | Where-Object {$_.isDirectory -eq "True"})
-          #           {
-          #               $removefolder = $folder.name
-          #               $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey --path $removefolder
-          #               $fileArray = $filelist | ConvertFrom-Json
+        #    inputs:
+        #     azureSubscription: 'Azure subscription'
+        #     ScriptType: 'InlineScript'
+        #     Inline: |
+        #       param(
+        #           [string] $DirectoryPath,
+        #           [string] $StorageAccountName,
+        #           [string] $FileShareName,
+        #           [string] $ResourceGroupName,
+        #           [int] $DaysOld
+        #       )
+              
+        #       Set-StrictMode -Version Latest
+              
+        #       $ErrorActionPreference = "Stop"
+        #       $ProgressPreference = "SilentlyContinue"
+              
+        #       # Get the current date
+        #       $CurrentDate = Get-Date
+              
+        #       # Get the date to delete files older than
+        #       $DateToDelete = $CurrentDate.AddDays(-$DaysOld)
+              
+        #       $StorageAccount = Get-AzStorageAccount -Name $StorageAccountName -ResourceGroupName $ResourceGroupName
+        #       # Create a storage context
+        #       $StorageContext = $StorageAccount.Context
+              
+        #       # Define a function to recursively delete files in a directory
+        #       function Remove-FilesRecursively {
+        #           # Get the directory path from the first argument
+        #           $DirectoryPath = $Args[0]
+        #           Write-Output "Entering $DirectoryPath"
+              
+        #           # Get all the files and directories in the directory
+        #           Get-AzStorageFile -ShareName $FileShareName -Path $DirectoryPath -Context $StorageContext | Get-AzStorageFile `
+        #           | ForEach-Object {
+        #               $Item = $_
+        #               $Item.Name
+        #               # If the item is a file, check if it is older than the date to delete and remove it if true
+        #               if ($Item.GetType().Name -eq "AzureStorageFile" -and $Item.LastModified -lt $DateToDelete) {
+        #                   Write-Output "Removing $($Item.Name)"
+        #                   $Item | Remove-AzStorageFile
+        #               }
+        #               # If the item is a directory, call this function recursively with its path as an argument
+        #               elseif ($Item.GetType().Name -eq "AzureStorageFileDirectory") {
+        #                   Write-Output "Going into /$($DirectoryPath)/$($Item.Name)"
+        #                   Remove-FilesRecursively "$($DirectoryPath)/$($Item.Name)" @PSBoundParameters
+        #               }
+        #           }
+              
+        #           # Check if the directory is empty after deleting the files and directories inside it
+        #           $folder = Get-AzStorageFile -ShareName $FileShareName -Path $DirectoryPath -Context $StorageContext
+        #           $Contents = $folder | Get-AzStorageFile
+        #           if ($null -eq $Contents) {
+        #               Write-output "Removing empty folder $DirectoryPath"
+        #               $folder | Remove-AzStorageDirectory
+        #           }
+        #       }
+              
+        #       # Call the function with an empty string as an argument to start from the root directory of the file share
+        #       Remove-FilesRecursively $DirectoryPath @PSBoundParameters
+        #     azurePowerShellVersion: 'LatestVersion'
+        #     pwsh: true
+        # #       inputs:
+        # #         azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+        # #         ScriptType: 'InlineScript'
+        # #         Inline: |
+        # #           $StorageAccountName="mystorage61"  
+        # #           $ResourceGroupName="MYNEWRG6"  
+        # #           $fileshareName = "filetodelete"  
+                  
+        # #             $StorageAccountAccessKey = Get-AzStorageAccountKey -ResourceGroupName $ResourceGroupName -AccountName $StorageAccountName | Where-Object {$_.KeyName -eq "key1"}  
+                  
+        # #             $ctx = New-AzStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountAccessKey.Value  
+                  
+        # #           $DirIndex = 0  
+        # #           $dirsToList = New-Object System.Collections.Generic.List[System.Object]  
+                    
+        # #           # Get share root Dir  
+        # #           $shareroot = Get-AzStorageFile -ShareName $shareName -Path . -context $ctx   
+        # #           $dirsToList += $shareroot   
+                    
+        # #           # List files recursively and remove file older than 14 days   
+        # #           While ($dirsToList.Count -gt $DirIndex)  
+        # #           {  
+        # #               $dir = $dirsToList[$DirIndex]  
+        # #               $DirIndex ++  
+        # #               $fileListItems = $dir | Get-AzStorageFile  
+        # #               $dirsListOut = $fileListItems | where {$_.GetType().Name -eq "AzureStorageFileDirectory"}  
+        # #               $dirsToList += $dirsListOut  
+        # #               $files = $fileListItems | where {$_.GetType().Name -eq "AzureStorageFile"}  
+                    
+        # #               foreach($file in $files)  
+        # #               {  
+        # #                   # Fetch Attributes of each file and output  
+        # #                   $task = $file.CloudFile.FetchAttributesAsync()  
+        # #                   $task.Wait()  
+                    
+        # #                   # remove file if it's older than 14 days.  
+        # #                   if ($file.CloudFile.Properties.LastModified -lt (9Get-Date).AddDays(0))  
+        # #                   {  
+        # #                 Write-Host "file :",$file.Name  "is older than 0 days so removing it ..!"   
+        # #                       ## print the file LMT  
+        # #                       # $file | Select @{ Name = "Uri"; Expression = { $_.CloudFile.SnapshotQualifiedUri} }, @{ Name = "LastModified"; Expression = { $_.CloudFile.Properties.LastModified } }   
+                    
+        # #                       # remove file  
+        # #                       $file | Remove-AzStorageFile  
+        # #                   }  
+        # #               }  
+        # #               #Debug log  
+        # #               # Write-Host  $DirIndex $dirsToList.Length  $dir.CloudFileDirectory.SnapshotQualifiedUri.ToString()   
+        # #           }
+
+        # # # - task: AzureCLI@2
+        # # #   inputs:
+        # # #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+        # # #     scriptType: 'bash'
+        # # #     scriptLocation: 'inlineScript'
+        # # #   # - task: AzurePowerShell@5
+        # #   #   inputs:
+        # #   #     azureSubscription: 'Azure subscription 1(1)(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+        # #   #     ScriptType: 'InlineScript'
+        # #   #     Inline: |
+        # #   #       # $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey) --connection-string $(string-connect)
+        # #   #       #     $fileArray = $filelist | ConvertFrom-Json
+        # #   #       #     foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddDays(0))})
+        # #   #       #     {
+        # #   #       #         $removefile = $file.name
+        # #   #       #         if ($removefile -ne $null)
+        # #   #       #         {
+        # #   #       #             Write-Host "Removing file $removefile"
+        # #   #       #             az storage file delete -s 'filetodelete' -p $removefile
+        # #   #       #         }
+        # #   #       #     }
+        # #   #       $myshare = "$(filetodelete)" 
+        # #   #       $accountName ="$(mystorage)" 
+        # #   #       $accountKey =  "$(accountKey)" 
+
+        # #   #       $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey
+        # #   #              write-host $filelist
+        # #   #       $fileArray = $filelist | ConvertFrom-Json
+        # #   #       write-host $fileArray
+        # #   #       foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
+        # #   #           {
+        # #   #              $removefile = $file.name
+        # #   #               write-host $file.name 
+        # #   #                 write-host $file.isDirectory 
+        # #   #                 if ($removefile -ne $null -And $file.isDirectory -ne "True")
+        # #   #               {
+        # #   #                   Write-Host "Removing file $removefile"
+        # #   #                   az storage file delete -s $myshare -p $removefile --account-name $accountName --account-key $accountKey
+        # #   #               }
+        # #   #           }
+        # #   #       foreach ($folder in $fileArray | Where-Object {$_.isDirectory -eq "True"})
+        # #   #           {
+        # #   #               $removefolder = $folder.name
+        # #   #               $filelist = az storage file list -s $myshare --account-name $accountName --account-key $accountKey --path $removefolder
+        # #   #               $fileArray = $filelist | ConvertFrom-Json
                
-          #               write-host $fileArray
-          #               foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
-          #                   {
-          #                       $removefile = $file.name
-          #                       write-host $file.name 
-          #                         write-host $file.isDirectory 
-          #                       if ($removefile -ne $null -And $file.isDirectory -ne "True")
-          #                       {
-          #                           Write-Host "Removing file $removefile"
-          #                           az storage file delete -s $myshare -p  $removefolder/$removefile --account-name $accountName --account-key $accountKey
-          #                       }
-          #           }
-          #           }    
-          #     azurePowerShellVersion: 'LatestVersion'
-          # # - task: AzureCLI@2
-          # #   inputs:
-          # #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
-          # #     scriptType: 'bash'
-          # #     scriptLocation: 'inlineScript'
-          # #     inlineScript: |
-          # #       $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
-          # #           $fileArray = $filelist | ConvertFrom-Json
-          # #           foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
-          # #           {
-          # #               $removefile = $file.name
-          # #               if ($removefile -ne $null)
-          # #               {
-          # #                   Write-Host "Removing file $removefile"
-          # #                   az storage file delete -s $myshare -p $removefile
-          # #               }
-          # #           }
-          # #     addSpnToEnvironment: true
-          #     useGlobalConfig: true
+        # #   #               write-host $fileArray
+        # #   #               foreach ($file in $fileArray | Where-Object {$_.properties.lastWriteTime.DateTime -lt ((Get-Date).AddHours(-12))})
+        # #   #                   {
+        # #   #                       $removefile = $file.name
+        # #   #                       write-host $file.name 
+        # #   #                         write-host $file.isDirectory 
+        # #   #                       if ($removefile -ne $null -And $file.isDirectory -ne "True")
+        # #   #                       {
+        # #   #                           Write-Host "Removing file $removefile"
+        # #   #                           az storage file delete -s $myshare -p  $removefolder/$removefile --account-name $accountName --account-key $accountKey
+        # #   #                       }
+        # #   #           }
+        # #   #           }    
+        # #   #     azurePowerShellVersion: 'LatestVersion'
+        # #   # # - task: AzureCLI@2
+        # #   # #   inputs:
+        # #   # #     azureSubscription: 'Azure subscription 1(0bb04acb-8639-4207-ab1c-2cbab5516176)'
+        # #   # #     scriptType: 'bash'
+        # #   # #     scriptLocation: 'inlineScript'
+        # #   # #     inlineScript: |
+        # #   # #       $filelist = az storage file list -s $(filetodelete) --account-name $(mystorage) --account-key $(accountKey)
+        # #   # #           $fileArray = $filelist | ConvertFrom-Json
+        # #   # #           foreach ($file in $fileArray | Where-Object {$_.properties.lastModified.DateTime -lt ((Get-Date).AddDays(-90))})
+        # #   # #           {
+        # #   # #               $removefile = $file.name
+        # #   # #               if ($removefile -ne $null)
+        # #   # #               {
+        # #   # #                   Write-Host "Removing file $removefile"
+        #   # #                   az storage file delete -s $myshare -p $removefile
+        #   # #               }
+        #   # #           }
+        #   # #     addSpnToEnvironment: true
+        #   #     useGlobalConfig: true
