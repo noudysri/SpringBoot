@@ -8,11 +8,9 @@ pr: none
 variables:
 #   - group: vartest
   - name: accountName
-    value: 6mystorageaccount
-  - name: StorageAccountName
-    value: 6mystorageaccount
+    value: '6mystorageaccount'
   - name: key
-    value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
+    value: 'CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg=='
 #     value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 #   - name: string-connect
 #     value: DefaultEndpointsProtocol=https;AccountName=mystorage616;AccountKey=kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==;EndpointSuffix=core.windows.net
@@ -28,8 +26,8 @@ stages:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
               Inline: |
-                $ctx = New-AzStorageContext -StorageAccountName $accountName -StorageAccountKey $key  
-                $shareName = filetodelete  
+                $ctx = New-AzStorageContext -StorageAccountName $(accountName) -StorageAccountKey $(key)  
+                $shareName = 'filetodelete'  
                   
                 $DirIndex = 0  
                 $dirsToList = New-Object System.Collections.Generic.List[System.Object]  
