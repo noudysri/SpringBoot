@@ -5,13 +5,12 @@ pool:
 trigger: none
 pr: none
 
-# variables:
+variables:
 #   - group: vartest
-#   - name: filetodelete
-#     value: filetodelete
-#   - name: mystorage
-#     value: mystorage616
-#   - name: accountkey
+  - name: accountname
+    value: 6mystorageaccount
+  - name: key
+    value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
 #     value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
 #   - name: string-connect
 #     value: DefaultEndpointsProtocol=https;AccountName=mystorage616;AccountKey=kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==;EndpointSuffix=core.windows.net
@@ -27,7 +26,7 @@ stages:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
               Inline: |
-                $ctx = New-AzStorageContext -6mystorageaccount $accountName -+lVt/N8Ld+90afGetaq8Ko5CUvHr47ZDqnA9O1fOXtExq9YMhBLNNHrXoPAJn/tDuqjzJwh1ymg3+AStjXSntg== $key  
+                $ctx = New-AzStorageContext -StorageAccountName $accountName -StorageAccountKey $key  
                 $shareName = filetodelete  
                   
                 $DirIndex = 0  
