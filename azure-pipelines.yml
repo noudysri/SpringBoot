@@ -46,12 +46,12 @@ stages:
             inputs:
               azureSubscription: 'Azure subscription'
               ScriptType: 'InlineScript'
-              Inline: 'Import-Module MSOnline'
+              Inline: 'Import-Module MSOnline -force'
               preferredAzurePowerShellVersion: '1.0.0'
           - task: AzurePowerShell@5
             inputs:
               ScriptType: 'InlineScript'
-              Inline: 'Connect-MsolService'
+              Inline: 'Connect-MsolService -force'
               preferredAzurePowerShellVersion: '1.0.0'
           - task: AzurePowerShell@5
             inputs:
