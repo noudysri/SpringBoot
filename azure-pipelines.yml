@@ -35,7 +35,20 @@ stages:
           #     scriptType: 'bash'
           #     scriptLocation: 'inlineScript'
           #     inlineScript: 'az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare)'
-
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure subscription'
+              ScriptType: 'InlineScript'
+              Inline: 'Install-Module MSOnline'
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'Azure subscription'
+              ScriptType: 'InlineScript'
+              Inline: 'Import-Module MSOnline'
+          - task: AzurePowerShell@5
+            inputs:
+              ScriptType: 'InlineScript'
+              Inline: 'Connect-MsolService'
           - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'Azure subscription'
