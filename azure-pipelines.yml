@@ -57,7 +57,7 @@ stages:
                         {  
                             ## print the file LMT  
                             # $file | Select @{ Name = "Uri"; Expression = { $_.CloudFile.SnapshotQualifiedUri} }, @{ Name = "LastModified"; Expression = { $_.CloudFile.Properties.LastModified } }   
-                            Write-Host "Removing file $file" 
+                            Write-Host "Removing file $file.Name" 
                             # remove file  
                             $file | Remove-AzStorageFile  
                         }  
