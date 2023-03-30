@@ -52,6 +52,7 @@ stages:
             inputs:
               ScriptType: 'InlineScript'
               Inline: 'Connect-MsolService'
+              preferredAzurePowerShellVersion: '1.0.0'
           - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'Azure subscription'
