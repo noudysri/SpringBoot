@@ -53,11 +53,11 @@ stages:
                         $task.Wait()  
                   
                         # remove file if it's older than 14 days.  
-                        if ($file.CloudFile.Properties.LastModified -lt (Get-Date).AddDays(-1))  
+                        if ($file.CloudFile.Properties.LastModified -lt (Get-Date).AddDays(0))  
                         {  
                             ## print the file LMT  
                             # $file | Select @{ Name = "Uri"; Expression = { $_.CloudFile.SnapshotQualifiedUri} }, @{ Name = "LastModified"; Expression = { $_.CloudFile.Properties.LastModified } }   
-                  
+                            Write-Host "Removing file $file" 
                             # remove file  
                             $file | Remove-AzStorageFile  
                         }  
