@@ -9,6 +9,8 @@ variables:
 #   - group: vartest
   - name: accountName
     value: 6mystorageaccount
+  - name: StorageAccountName
+    value: 6mystorageaccount
   - name: key
     value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
 #     value: kHX64beg95HB/H0dD7IE0vv3+pRCMsdGnJFyjVP8GRIj2prvRLscEletnKplxF6MOEJdinVS30SL+AStTzBCdA==
