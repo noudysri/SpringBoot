@@ -7,7 +7,7 @@ pr: none
 
 variables:
 #   - group: vartest
-  - name: accountname
+  - name: accountName
     value: 6mystorageaccount
   - name: key
     value: CqzC7VDeT7V3NQANYuVxHm1KyxeFOipeS5Nu4UZo3xXAOhJLTWf/sdkyzTbioIZAlNYCaQuiizEV+ASt/2a2pg==
