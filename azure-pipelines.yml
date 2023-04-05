@@ -22,7 +22,7 @@ stages:
             targetType: 'inline'
             script: |
               # Write your commands here
-              exit(1)
+                echo Hi
               
               echo 'Hello world'
           # - task: Bash@3
