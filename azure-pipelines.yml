@@ -23,7 +23,6 @@ stages:
             script: |
               # Write your commands here
                 echo Hi
-                exit(1)
               
               echo 'Hello world'
           # - task: Bash@3
