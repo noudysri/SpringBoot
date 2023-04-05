@@ -1,15 +1,14 @@
-pool:
-  vmImage: windows-latest
+#   vmImage: windows-latest
 
-variables:
-- name: myshare
-  value: 'filetodelete'
-- name: accountname
-  value: '6mystorageaccount'
-- name: accountkey
-  value: '
-- name: storageconnection
-  value: ' 
+# variables:
+# - name: myshare
+#   value: 'filetodelete'
+# - name: accountname
+#   value: '6mystorageaccount'
+# - name: accountkey
+#   value: '
+# - name: storageconnection
+#   value: ' 
 
 trigger: none
 pr: none
@@ -18,6 +17,13 @@ stages:
     jobs:
       - job:
         steps:
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: |
+              # Write your commands here
+              
+              echo 'Hello world'
           # - task: Bash@3
           #   inputs:
           #     targetType: 'inline'
@@ -35,39 +41,39 @@ stages:
           #     scriptType: 'bash'
           #     scriptLocation: 'inlineScript'
           #     inlineScript: 'az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare)'
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'Azure subscription'
-              ScriptType: 'InlineScript'
-              Inline: 'Install-Module MSOnline -force'
-              preferredAzurePowerShellVersion: '1.0.0'
-
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'Azure subscription'
-              ScriptType: 'InlineScript'
-              Inline: 'Import-Module MSOnline -force'
-              preferredAzurePowerShellVersion: '1.0.0'
           # - task: AzurePowerShell@5
           #   inputs:
+          #     azureSubscription: 'Azure subscription'
           #     ScriptType: 'InlineScript'
-          #     Inline: 'Connect-MsolService -force'
+          #     Inline: 'Install-Module MSOnline -force'
           #     preferredAzurePowerShellVersion: '1.0.0'
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'Azure subscription'
-              ScriptType: 'InlineScript'
-              Inline: | 
-                [Net.ServicePointManager]::SecurityProtocol = "tls12"
-                $filelist = az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare) 
-                $fileArray = $filelist | ConvertFrom-Json
-                foreach ($file in $fileArray | Where-Object {$_.properties.lastAccessTime.DateTime -lt ((Get-Date).AddDays(-1))})
-                {
-                    $removefile = $file.name
-                    if ($removefile -ne $null)
-                    {
-                        Write-Host "Removing file $removefile"
-                        az storage file delete --account-name 6mystorageaccount --connection-string $(storageconnection) --share-name/-s $(myshare) --path/-p $file.name
-                    }
-                }
-              preferredAzurePowerShellVersion: '1.0.0'
+
+          # - task: AzurePowerShell@5
+          #   inputs:
+          #     azureSubscription: 'Azure subscription'
+          #     ScriptType: 'InlineScript'
+          #     Inline: 'Import-Module MSOnline -force'
+          #     preferredAzurePowerShellVersion: '1.0.0'
+          # # - task: AzurePowerShell@5
+          # #   inputs:
+          # #     ScriptType: 'InlineScript'
+          # #     Inline: 'Connect-MsolService -force'
+          # #     preferredAzurePowerShellVersion: '1.0.0'
+          # - task: AzurePowerShell@5
+          #   inputs:
+          #     azureSubscription: 'Azure subscription'
+          #     ScriptType: 'InlineScript'
+          #     Inline: | 
+          #       [Net.ServicePointManager]::SecurityProtocol = "tls12"
+          #       $filelist = az storage file list --account-key $(accountkey) --account-name $(accountname) --share-name $(myshare) 
+          #       $fileArray = $filelist | ConvertFrom-Json
+          #       foreach ($file in $fileArray | Where-Object {$_.properties.lastAccessTime.DateTime -lt ((Get-Date).AddDays(-1))})
+          #       {
+          #           $removefile = $file.name
+          #           if ($removefile -ne $null)
+          #           {
+          #               Write-Host "Removing file $removefile"
+          #               az storage file delete --account-name 6mystorageaccount --connection-string $(storageconnection) --share-name/-s $(myshare) --path/-p $file.name
+          #           }
+          #       }
+          #     preferredAzurePowerShellVersion: '1.0.0'
